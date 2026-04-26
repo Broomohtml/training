@@ -877,16 +877,12 @@ function handleAddSchedaSubmit() {
 // Modal helpers
 function openModal(id) {
   const el = document.getElementById(id);
-  if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  if (el) el.classList.add('open');
 }
 
 function closeModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.remove('open');
-  // Only restore overflow if no other modal open
-  if (!document.querySelector('.modal-overlay.open')) {
-    document.body.style.overflow = '';
-  }
 }
 
 function initModalClose(overlayId, closeBtnId, closeFn) {
