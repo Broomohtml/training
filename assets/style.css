@@ -1698,7 +1698,7 @@ select.form-input {
   color: #fff;
 }
 
-.dieta-panel-inner { display: flex; flex-direction: column; }
+.dieta-panel-inner { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .dieta-panel-inner.hidden { display: none; }
 
 /* Day navigation */

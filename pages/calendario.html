@@ -87,33 +87,35 @@
 
       <!-- ── Pannello OGGI ── -->
       <div class="dieta-panel-inner" id="dietaPanelOggi">
+
+        <!-- Day navigation (fuori dalla card) -->
+        <div class="dieta-day-nav">
+          <button class="dieta-day-nav-btn" id="dietaDayPrev">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <div class="dieta-day-label" id="dietaDayLabel">—</div>
+          <button class="dieta-day-nav-btn" id="dietaDayNext">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- Macro progress bar (fuori dalla card) -->
+        <div class="dieta-macro-bar">
+          <div class="dieta-macro-row">
+            <span class="dieta-macro-label">Kcal</span>
+            <div class="dieta-macro-track"><div class="dieta-macro-fill kcal" id="macroKcalFill" style="width:0%"></div></div>
+            <span class="dieta-macro-val" id="macroKcalVal">0 / 1810</span>
+          </div>
+          <div class="dieta-macro-row">
+            <span class="dieta-macro-label">Prot</span>
+            <div class="dieta-macro-track"><div class="dieta-macro-fill prot" id="macroPRotFill" style="width:0%"></div></div>
+            <span class="dieta-macro-val" id="macroPRotVal">0g / 140g</span>
+          </div>
+        </div>
+
+        <!-- Card scrollabile con i pasti -->
         <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
           <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
-
-            <!-- Day navigation -->
-            <div class="dieta-day-nav">
-              <button class="dieta-day-nav-btn" id="dietaDayPrev">
-                <span class="material-symbols-outlined">chevron_left</span>
-              </button>
-              <div class="dieta-day-label" id="dietaDayLabel">—</div>
-              <button class="dieta-day-nav-btn" id="dietaDayNext">
-                <span class="material-symbols-outlined">chevron_right</span>
-              </button>
-            </div>
-
-            <!-- Macro progress bar -->
-            <div class="dieta-macro-bar">
-              <div class="dieta-macro-row">
-                <span class="dieta-macro-label">Kcal</span>
-                <div class="dieta-macro-track"><div class="dieta-macro-fill kcal" id="macroKcalFill" style="width:0%"></div></div>
-                <span class="dieta-macro-val" id="macroKcalVal">0 / 1810</span>
-              </div>
-              <div class="dieta-macro-row">
-                <span class="dieta-macro-label">Prot</span>
-                <div class="dieta-macro-track"><div class="dieta-macro-fill prot" id="macroPRotFill" style="width:0%"></div></div>
-                <span class="dieta-macro-val" id="macroPRotVal">0g / 140g</span>
-              </div>
-            </div>
 
             <!-- 5 Meal cards (rendered by JS) -->
             <div id="dietaMealCards"></div>
