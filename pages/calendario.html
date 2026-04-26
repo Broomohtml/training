@@ -71,10 +71,11 @@
     <!-- ── TAB: Dieta ─────────────────────────────────────── -->
     <div class="cal-panel hidden" id="panelDieta">
 
-      <!-- Sub-tabs Oggi / Piano -->
+      <!-- Sub-tabs Oggi / Piano / Settimana -->
       <div class="dieta-subtabs">
         <button class="dieta-subtab active" data-subtab="oggi">Oggi</button>
         <button class="dieta-subtab" data-subtab="piano">Piano</button>
+        <button class="dieta-subtab" data-subtab="settimana">Settimana</button>
       </div>
 
       <!-- ── Pannello OGGI ── -->
@@ -156,6 +157,15 @@
         <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
           <div class="page-list-scroll">
             <div style="padding:8px 0 4px" id="dietaPianoSlots"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Pannello SETTIMANA ── -->
+      <div class="dieta-panel-inner hidden" id="dietaPanelSettimana">
+        <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
+          <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+            <div class="dieta-week-outer" id="dietaWeekOuter"></div>
           </div>
         </div>
       </div>

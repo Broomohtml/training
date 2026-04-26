@@ -1,7 +1,7 @@
 'use strict';
 
 // ─── Config ───────────────────────────────────────────────────
-const APP_VERSION = '0.0.13';
+const APP_VERSION = '0.0.14';
 
 // ─── Keys ─────────────────────────────────────────────────────
 const KEYS = {
@@ -1376,7 +1376,9 @@ function initDieta() {
       const tab = btn.dataset.subtab;
       document.getElementById('dietaPanelOggi').classList.toggle('hidden', tab !== 'oggi');
       document.getElementById('dietaPanelPiano').classList.toggle('hidden', tab !== 'piano');
+      document.getElementById('dietaPanelSettimana')?.classList.toggle('hidden', tab !== 'settimana');
       if (tab === 'piano') renderPianoSlots();
+      if (tab === 'settimana') renderSettimanaDieta();
     });
   });
 
@@ -1718,6 +1720,22 @@ function buildPianoSlot(slot, di) {
 
 function buildMensaPianoSlot(slot) {
   const di = dayIndex(getToday());
+
+  // Weekend: mostra il pasto fisso, non il sistema mensa
+  if (di === 5 || di === 6) {
+    const meal = getMealData(slot, getToday());
+    return `
+      <div class="piano-slot">
+        <div class="piano-slot-header">
+          <span class="piano-slot-nome">Pranzo</span>
+          <span class="piano-slot-ora">${slot.ora}</span>
+        </div>
+        <div style="padding:10px 14px;font-size:13px;color:var(--text-2)">
+          ${meal?.alimento || '—'}${meal?.kcal != null ? ` · ${meal.kcal} kcal` : ''}
+        </div>
+      </div>`;
+  }
+
   const sug = slot.rating_suggerito?.[di];
   return `
     <div class="piano-slot">
@@ -1729,6 +1747,74 @@ function buildMensaPianoSlot(slot) {
         Sistema a rating SS → F. ${sug ? `Oggi suggerito: <strong>${sug}</strong>` : 'Seleziona il rating dal tab Oggi.'}
       </div>
     </div>`;
+}
+
+// ─── SETTIMANA TAB ────────────────────────────────────────────
+function renderSettimanaDieta() {
+  const container = document.getElementById('dietaWeekOuter');
+  if (!container) return;
+  const piano = getDietaPiano();
+  if (!piano || !piano.length) {
+    container.innerHTML = '<div class="dieta-empty" style="padding:32px 16px;text-align:center;color:var(--text-3)">Nessun piano configurato</div>';
+    return;
+  }
+
+  const today     = getToday();
+  const weekStart = getWeekStart(today);
+  const days      = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const dayNames  = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+
+  let html = '<table class="dieta-week-table"><thead><tr>';
+  html += '<th class="dieta-week-slot-th"></th>';
+  days.forEach((iso, i) => {
+    const day = parseInt(iso.split('-')[2]);
+    const isToday = iso === today;
+    html += `<th class="dieta-week-day-th${isToday ? ' today' : ''}">
+      <div class="dieta-week-day-name">${dayNames[i]}</div>
+      <div class="dieta-week-day-num">${day}</div>
+    </th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  piano.forEach(slot => {
+    html += '<tr>';
+    html += `<td class="dieta-week-slot-label"><div>${slot.nome}</div><div class="dieta-week-slot-ora">${slot.ora}</div></td>`;
+    days.forEach(iso => {
+      const isToday = iso === today;
+      let cellHtml = '<span class="dieta-week-empty">—</span>';
+
+      if (slot.tipo === 'mensa') {
+        const di = dayIndex(iso);
+        if (di === 5 || di === 6) {
+          const meal = getMealData(slot, iso);
+          if (meal?.alimento) {
+            cellHtml = `<span class="dieta-week-alimento">${meal.alimento}</span>${meal.kcal != null ? `<span class="dieta-week-kcal">${meal.kcal} kcal</span>` : ''}`;
+          }
+        } else {
+          const rec    = getDayRecord(iso);
+          const rating = rec.pasti?.[slot.id]?.rating;
+          if (rating && RATING_MENSA[rating]) {
+            cellHtml = `<span class="dieta-week-rating">${rating}</span><span class="dieta-week-kcal">${RATING_MENSA[rating].kcal} kcal</span>`;
+          }
+        }
+      } else {
+        const meal = getMealData(slot, iso);
+        if (meal) {
+          const label = meal.alimento || meal._opt_nome || '';
+          const kcal  = meal.kcal;
+          cellHtml = label
+            ? `<span class="dieta-week-alimento">${label}</span>${kcal != null ? `<span class="dieta-week-kcal">${kcal} kcal</span>` : ''}`
+            : '<span class="dieta-week-empty">—</span>';
+        }
+      }
+
+      html += `<td class="dieta-week-td${isToday ? ' today' : ''}">${cellHtml}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
 }
 
 function setOpzioneAttiva(slotId, optId) {

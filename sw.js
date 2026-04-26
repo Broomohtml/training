@@ -1,4 +1,4 @@
-const CACHE = 'training-v14';
+const CACHE = 'training-v15';
 
 const ASSETS = [
   '/',
@@ -6,6 +6,7 @@ const ASSETS = [
   '/pages/schede.html',
   '/pages/progressi.html',
   '/pages/profilo.html',
+  '/pages/calendario.html',
   '/assets/style.css',
   '/assets/app.js',
   '/manifest.json',
