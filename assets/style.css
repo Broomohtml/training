@@ -126,6 +126,12 @@ body {
   font-size: 20px;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 /* ─── 5. PAGE TOP BAR (pagine secondarie) ───────────────────── */
 .page-top-bar {
   padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 12px;
@@ -222,10 +228,17 @@ body {
   color: var(--text-1);
 }
 
-.hero-date {
+.hero-streak-label {
   font-size: 14px;
+  font-weight: 600;
+  color: var(--violet-3);
+  margin-top: 2px;
+}
+
+.hero-date {
+  font-size: 13px;
   color: var(--text-2);
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .hero-streak {

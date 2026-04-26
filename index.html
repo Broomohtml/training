@@ -35,9 +35,14 @@
   <header class="app-header">
     <button class="header-avatar" id="headerAvatar">T</button>
     <span class="header-title">Training</span>
-    <button class="header-icon-btn" id="headerCalBtn" aria-label="Calendario e dieta">
-      <span class="material-symbols-outlined">bolt</span>
-    </button>
+    <div class="header-actions">
+      <button class="header-icon-btn" id="headerDietaBtn" aria-label="Dieta">
+        <span class="material-symbols-outlined">restaurant</span>
+      </button>
+      <button class="header-icon-btn" id="headerCalBtn" aria-label="Calendario">
+        <span class="material-symbols-outlined">bolt</span>
+      </button>
+    </div>
   </header>
 
   <!-- Main -->
@@ -45,12 +50,9 @@
 
     <!-- Hero -->
     <section class="home-hero">
-      <div class="hero-day" id="heroDay">OGGI</div>
+      <div class="hero-day" id="heroDay">0</div>
+      <div class="hero-streak-label">🔥 giorni di fila</div>
       <div class="hero-date" id="heroDate">—</div>
-      <div class="hero-streak" id="heroStreak" style="display:none">
-        <span class="material-symbols-outlined">local_fire_department</span>
-        <span class="streak-num"></span>
-      </div>
     </section>
 
     <!-- Toggle Gym / Home -->

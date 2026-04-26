@@ -1,7 +1,7 @@
 'use strict';
 
 // ─── Config ───────────────────────────────────────────────────
-const APP_VERSION = '0.0.10';
+const APP_VERSION = '0.0.11';
 
 // ─── Keys ─────────────────────────────────────────────────────
 const KEYS = {
@@ -222,6 +222,8 @@ function goTo(page) {
     const onPage = fromPages.some(p => window.location.pathname.includes(p + '.html'));
     if (page === 'home') {
       window.location.href = onPage ? '../index.html' : 'index.html';
+    } else if (page === 'dieta') {
+      window.location.href = onPage ? 'calendario.html#dieta' : 'pages/calendario.html#dieta';
     } else {
       window.location.href = onPage ? map[page] : `pages/${page}.html`;
     }
@@ -432,22 +434,14 @@ function saveExerciseProgress(exId, tipo) {
 
 // ─── HOME PAGE ────────────────────────────────────────────────
 function initHome() {
-  // Hero
+  // Hero — streak grande, data sotto
   const dayEl  = document.getElementById('heroDay');
   const dateEl = document.getElementById('heroDate');
-  if (dayEl)  dayEl.textContent  = dayLabel();
-  if (dateEl) dateEl.textContent = `${dateLabel()} · ${weekLabel()}`;
-
-  // Streak mini
-  const streakEl = document.getElementById('heroStreak');
-  if (streakEl) {
-    const s = calcStreak('all');
-    if (s > 0) {
-      streakEl.style.display = 'inline-flex';
-      streakEl.querySelector('.streak-num').textContent = `${s} giorni di fila`;
-    } else {
-      streakEl.style.display = 'none';
-    }
+  if (dayEl)  dayEl.textContent  = calcStreak('all');
+  if (dateEl) {
+    const d = new Date();
+    const dayName = GIORNI[d.getDay()].toLowerCase();
+    dateEl.textContent = `${dayName} ${dateLabel()} · ${weekLabel().toLowerCase()}`;
   }
 
   // Toggle gym/home
@@ -489,8 +483,9 @@ function initHome() {
   if (playPauseBtn) playPauseBtn.addEventListener('click', pauseTimer);
   if (stopBtn)      stopBtn.addEventListener('click', stopTimer);
 
-  // Fulmine → calendario
+  // Bottoni header
   document.getElementById('headerCalBtn')?.addEventListener('click', () => goTo('calendario'));
+  document.getElementById('headerDietaBtn')?.addEventListener('click', () => goTo('dieta'));
 
   // Profile avatar → go to profilo
   const avatar = document.getElementById('headerAvatar');
@@ -1218,6 +1213,12 @@ function initCalendario() {
   });
 
   initDieta();
+
+  // Auto-apri tab dieta se navigazione con hash #dieta
+  if (location.hash === '#dieta') {
+    const dietaBtn = document.querySelector('#calTabs [data-tab="dieta"]');
+    if (dietaBtn) dietaBtn.click();
+  }
 }
 
 function renderCalendario() {
@@ -1401,8 +1402,7 @@ function initDieta() {
     }
   });
   document.getElementById('dietaDayNext')?.addEventListener('click', () => {
-    const today = getToday();
-    if (_dietaCurrentDay < today) {
+    if (_dietaCurrentDay < addDays(getToday(), 6)) {
       _dietaCurrentDay = addDays(_dietaCurrentDay, 1);
       renderOggi();
     }
@@ -1457,7 +1457,7 @@ function renderOggi() {
   const prevBtn = document.getElementById('dietaDayPrev');
   const nextBtn = document.getElementById('dietaDayNext');
   if (prevBtn) prevBtn.disabled = _dietaCurrentDay <= ws;
-  if (nextBtn) nextBtn.disabled = _dietaCurrentDay >= today;
+  if (nextBtn) nextBtn.disabled = _dietaCurrentDay >= addDays(today, 6);
 
   // Acqua + note
   const rec = getDayRecord(_dietaCurrentDay);
