@@ -1072,6 +1072,10 @@ function updateDietaUI(dieta) {
 }
 
 // ─── DOMContentLoaded ─────────────────────────────────────────
+window.addEventListener('pageshow', () => {
+  document.body.style.opacity = '1';
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   initDefaults();
   checkMidnightReset();
