@@ -1060,6 +1060,60 @@ select.form-input {
   color: var(--text-3);
 }
 
+/* ─── Incrementi ─────────────────────────────────────────────── */
+.incrementi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 4px 16px 16px;
+}
+.incremento-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px 12px 12px;
+}
+.incremento-card.positivo {
+  border-color: rgba(0,216,124,0.25);
+  background: rgba(0,216,124,0.06);
+}
+.incremento-card.negativo {
+  border-color: rgba(255,75,75,0.2);
+  background: rgba(255,75,75,0.05);
+}
+.incremento-delta {
+  font-family: 'DM Mono', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--green);
+  line-height: 1;
+}
+.incremento-card.negativo .incremento-delta { color: var(--danger); }
+.incremento-nome {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-top: 6px;
+}
+.incremento-detail {
+  font-size: 11px;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+.incremento-date {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 6px;
+}
+.incrementi-empty {
+  grid-column: 1 / -1;
+  padding: 20px 0;
+  text-align: center;
+  color: var(--text-3);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .sessione-row {
   display: flex;
   align-items: center;

@@ -1,7 +1,7 @@
 'use strict';
 
 // ─── Config ───────────────────────────────────────────────────
-const APP_VERSION = '0.0.8';
+const APP_VERSION = '0.0.9';
 
 // ─── Keys ─────────────────────────────────────────────────────
 const KEYS = {
@@ -14,6 +14,7 @@ const KEYS = {
   dieta:          'tr_dieta_today',   // legacy — solo acqua/note ora
   dieta_piano:    'tr_dieta_piano',
   dieta_settimana:'tr_dieta_settimana',
+  ex_history:     'tr_ex_history',
 };
 
 const RATING_MENSA = {
@@ -86,6 +87,8 @@ function getDietaPiano()       { return load(KEYS.dieta_piano, null); }
 function saveDietaPiano(arr)   { store(KEYS.dieta_piano, arr); }
 function getDietaSettimana()   { return load(KEYS.dieta_settimana, { settimana_start: '', giorni: {} }); }
 function saveDietaSettimana(o) { store(KEYS.dieta_settimana, o); }
+function getExHistory()        { return load(KEYS.ex_history, {}); }
+function saveExHistory(h)      { store(KEYS.ex_history, h); }
 
 function saveEserciziStore(arr) { store(KEYS.esercizi, arr); }
 function saveSchede(arr)        { store(KEYS.schede, arr); }
@@ -411,6 +414,13 @@ function saveExerciseProgress(exId, tipo) {
   const rips     = document.getElementById('exEditReps').value.trim() || esercizi[idx].ripetizioni;
   const peso     = parseFloat(document.getElementById('exEditPeso').value) || null;
   const timerSec = parseInt(document.getElementById('exEditTimer').value) || null;
+
+  // Log to history before overwriting
+  const hist = getExHistory();
+  if (!hist[exId]) hist[exId] = [];
+  hist[exId].push({ data: getToday(), serie, ripetizioni: rips, peso, timer_sec: timerSec });
+  if (hist[exId].length > 20) hist[exId] = hist[exId].slice(-20);
+  saveExHistory(hist);
 
   esercizi[idx] = { ...esercizi[idx], serie, ripetizioni: rips, peso, timer_sec: timerSec };
   saveEserciziStore(esercizi);
@@ -990,9 +1000,82 @@ function initModalClose(overlayId, closeBtnId, closeFn) {
 // ─── PROGRESSI PAGE ───────────────────────────────────────────
 function initProgressi() {
   renderStreaks();
+  renderIncrements();
   renderSessioniRecenti();
 
   document.getElementById('corsaBtn')?.addEventListener('click', handleCorsa);
+}
+
+function parseReps(rips) {
+  if (!rips) return null;
+  const m = String(rips).match(/\d+/);
+  return m ? parseInt(m[0]) : null;
+}
+
+function calcIncrements() {
+  const hist = getExHistory();
+  const esercizi = getEsercizi();
+  const increments = [];
+
+  Object.entries(hist).forEach(([exId, entries]) => {
+    if (entries.length < 2) return;
+    const prev = entries[entries.length - 2];
+    const curr = entries[entries.length - 1];
+    const ex = esercizi.find(e => e.id === exId);
+    if (!ex) return;
+
+    const deltas = [];
+    const prevReps = parseReps(prev.ripetizioni);
+    const currReps = parseReps(curr.ripetizioni);
+    if (prevReps !== null && currReps !== null && currReps !== prevReps) {
+      deltas.push({ type: 'rip', diff: currReps - prevReps, prev: prev.ripetizioni, curr: curr.ripetizioni });
+    }
+    if (prev.peso != null && curr.peso != null && curr.peso !== prev.peso) {
+      const diff = Math.round((curr.peso - prev.peso) * 10) / 10;
+      deltas.push({ type: 'kg', diff, prev: prev.peso, curr: curr.peso });
+    }
+    if (prev.serie && curr.serie && curr.serie !== prev.serie) {
+      deltas.push({ type: 'serie', diff: curr.serie - prev.serie, prev: prev.serie, curr: curr.serie });
+    }
+
+    if (deltas.length > 0) {
+      increments.push({ nome: ex.nome, deltas, data: curr.data });
+    }
+  });
+
+  increments.sort((a, b) => b.data.localeCompare(a.data));
+  return increments;
+}
+
+function renderIncrements() {
+  const grid = document.getElementById('incrementiGrid');
+  if (!grid) return;
+  const increments = calcIncrements();
+
+  if (increments.length === 0) {
+    grid.innerHTML = '<div class="incrementi-empty">Nessun incremento ancora.<br>Salva i progressi di un esercizio per vederli qui.</div>';
+    return;
+  }
+
+  const unitLabel = { rip: ' rip', kg: ' kg', serie: ' ser' };
+  const detailLabel = {
+    rip:   d => `${d.prev} → ${d.curr} ripetizioni`,
+    kg:    d => `${d.prev} → ${d.curr} kg`,
+    serie: d => `${d.prev} → ${d.curr} serie`,
+  };
+
+  grid.innerHTML = increments.slice(0, 8).map(inc => {
+    const d = inc.deltas[0];
+    const sign = d.diff > 0 ? '+' : '';
+    const positive = d.diff > 0;
+    return `
+      <div class="incremento-card ${positive ? 'positivo' : 'negativo'}">
+        <div class="incremento-delta">${sign}${d.diff}${unitLabel[d.type]}</div>
+        <div class="incremento-nome">${inc.nome}</div>
+        <div class="incremento-detail">${detailLabel[d.type](d)}</div>
+        <div class="incremento-date">${formatDateShort(inc.data)}</div>
+      </div>`;
+  }).join('');
 }
 
 function calcStreak(tipo) {
@@ -1287,6 +1370,11 @@ function getMealData(slot, isoDate) {
     const giorno = opt.giorni[di] || {};
     return { ...giorno, _opt_nome: opt.nome };
   }
+  if (slot.tipo === 'mensa' && (di === 5 || di === 6)) {
+    return di === 5
+      ? { alimento: 'Insalatona con Bresaola', grammi: '500g', kcal: 440, prot: 30 }
+      : { alimento: 'Pranzo libero', grammi: '-', kcal: null, prot: null };
+  }
   return null; // mensa handled separately
 }
 
@@ -1437,8 +1525,32 @@ function buildPastoCard(slot, pastoRec, readOnly) {
 }
 
 function buildMensaCard(slot, pastoRec, readOnly) {
-  const selectedRating = pastoRec?.rating || null;
   const di = dayIndex(_dietaCurrentDay);
+
+  // Weekend: no mensa, render as regular pasto card
+  if (di === 5 || di === 6) {
+    const meal = getMealData(slot, _dietaCurrentDay);
+    const mangiato = pastoRec?.mangiato || false;
+    return `
+      <div class="pasto-card ${mangiato ? 'mangiato' : ''}" data-slot="${slot.id}">
+        <div class="pasto-card-top">
+          <button class="pasto-check-btn ${readOnly ? 'disabled' : ''}" data-slot="${slot.id}" ${readOnly ? 'disabled' : ''}>
+            <span class="material-symbols-outlined">check</span>
+          </button>
+          <div class="pasto-info">
+            <div class="pasto-ora">${slot.ora}</div>
+            <div class="pasto-nome">Pranzo</div>
+            <div class="pasto-alimento">${meal.alimento}</div>
+          </div>
+          <div class="pasto-macros">
+            <span class="pasto-kcal">${meal.kcal !== null ? meal.kcal + ' kcal' : '—'}</span>
+            <span class="pasto-prot">${meal.prot !== null ? meal.prot + 'g prot' : ''}</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  const selectedRating = pastoRec?.rating || null;
   const suggerito = slot.rating_suggerito?.[di] || null;
 
   const btnHtml = Object.keys(RATING_MENSA).map(r => {
@@ -1505,8 +1617,15 @@ function updateMacroBar() {
     const p = pasti[slot.id];
     if (!p?.mangiato) return;
     if (slot.tipo === 'mensa') {
-      const r = RATING_MENSA[p.rating];
-      if (r) { totalKcal += r.kcal; totalProt += r.prot; }
+      const di = dayIndex(_dietaCurrentDay);
+      if (di === 5 || di === 6) {
+        const meal = getMealData(slot, _dietaCurrentDay);
+        if (meal?.kcal) totalKcal += meal.kcal;
+        if (meal?.prot) totalProt += meal.prot;
+      } else {
+        const r = RATING_MENSA[p.rating];
+        if (r) { totalKcal += r.kcal; totalProt += r.prot; }
+      }
     } else {
       const meal = getMealData(slot, _dietaCurrentDay);
       if (meal?.kcal) totalKcal += meal.kcal;
