@@ -1112,32 +1112,57 @@ const TIPO_COLOR = { gym: '#FF5E5E', home: 'var(--green)', corsa: '#4B8BFF' };
 
 function showDayDetail(iso, activityMap) {
   _calSelectedDay = iso;
-  const detail    = document.getElementById('calDayDetail');
-  const dateEl    = document.getElementById('calDetailDate');
-  const itemsEl   = document.getElementById('calDetailItems');
+  const detail  = document.getElementById('calDayDetail');
+  const dateEl  = document.getElementById('calDetailDate');
+  const itemsEl = document.getElementById('calDetailItems');
   if (!detail) return;
 
-  const d    = new Date(iso + 'T00:00:00');
-  const types = activityMap[iso] || [];
+  const d        = new Date(iso + 'T00:00:00');
+  const sessioni = getSessioni().filter(s => s.data === iso);
 
   dateEl.textContent = `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]}`;
 
-  if (types.length === 0) {
+  if (sessioni.length === 0) {
     itemsEl.innerHTML = '<div style="font-size:13px;color:var(--text-3)">Nessuna attività registrata</div>';
   } else {
-    itemsEl.innerHTML = types.map(t => `
+    itemsEl.innerHTML = sessioni.map(s => `
       <div class="cal-detail-item">
-        <div class="cal-detail-dot" style="background:${TIPO_COLOR[t]}"></div>
-        ${TIPO_LABEL[t] || t}
+        <div class="cal-detail-dot" style="background:${TIPO_COLOR[s.tipo]}"></div>
+        <span style="flex:1">${TIPO_LABEL[s.tipo] || s.tipo}</span>
+        <button class="cal-delete-btn" data-id="${s.id}" aria-label="Elimina">
+          <span class="material-symbols-outlined">close</span>
+        </button>
       </div>`).join('');
+
+    itemsEl.querySelectorAll('.cal-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteSessione(btn.dataset.id, iso));
+    });
   }
 
   detail.style.display = 'block';
 
-  // Update selected state in grid
   document.querySelectorAll('.cal-cell').forEach(c => {
     c.classList.toggle('selected', c.dataset.iso === iso);
   });
+}
+
+function deleteSessione(sessionId, iso) {
+  const sessioni = getSessioni().filter(s => s.id !== sessionId);
+  saveSessioni(sessioni);
+  showToast('Attività eliminata');
+  renderCalendario();
+  // rebuild activityMap and re-show detail (or hide if empty)
+  const remaining = sessioni.filter(s => s.data === iso);
+  if (remaining.length === 0) {
+    hideDayDetail();
+  } else {
+    const activityMap = {};
+    sessioni.forEach(s => {
+      if (!activityMap[s.data]) activityMap[s.data] = [];
+      if (!activityMap[s.data].includes(s.tipo)) activityMap[s.data].push(s.tipo);
+    });
+    showDayDetail(iso, activityMap);
+  }
 }
 
 function hideDayDetail() {
