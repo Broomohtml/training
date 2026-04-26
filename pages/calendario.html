@@ -23,14 +23,6 @@
     <span class="page-title" id="calPageTitle">Calendario</span>
   </div>
 
-  <!-- Tabs -->
-  <div style="padding: 0 16px 12px; flex-shrink:0; position:relative; z-index:1;">
-    <div class="filter-toggle" id="calTabs">
-      <button class="filter-toggle-btn active" data-tab="calendario">Calendario</button>
-      <button class="filter-toggle-btn" data-tab="dieta">Dieta</button>
-    </div>
-  </div>
-
   <!-- Main -->
   <main class="main-content">
 
@@ -115,7 +107,7 @@
 
         <!-- Card scrollabile con i pasti -->
         <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
-          <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+          <div class="page-list-scroll">
 
             <!-- 5 Meal cards (rendered by JS) -->
             <div id="dietaMealCards"></div>
@@ -162,7 +154,7 @@
       <!-- ── Pannello PIANO ── -->
       <div class="dieta-panel-inner hidden" id="dietaPanelPiano">
         <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
-          <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+          <div class="page-list-scroll">
             <div style="padding:8px 0 4px" id="dietaPianoSlots"></div>
           </div>
         </div>
@@ -253,9 +245,9 @@
       <span class="material-symbols-outlined nav-icon">trending_up</span>
       <span class="nav-label">Progressi</span>
     </button>
-    <button class="nav-item" data-page="profilo">
-      <span class="material-symbols-outlined nav-icon">person</span>
-      <span class="nav-label">Profilo</span>
+    <button class="nav-item" data-page="dieta">
+      <span class="material-symbols-outlined nav-icon">restaurant</span>
+      <span class="nav-label">Dieta</span>
     </button>
   </nav>
 

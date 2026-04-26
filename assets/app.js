@@ -1,7 +1,7 @@
 'use strict';
 
 // ─── Config ───────────────────────────────────────────────────
-const APP_VERSION = '0.0.11';
+const APP_VERSION = '0.0.13';
 
 // ─── Keys ─────────────────────────────────────────────────────
 const KEYS = {
@@ -56,8 +56,9 @@ function weekLabel() {
 }
 
 function formatDateShort(iso) {
-  const d = new Date(iso + 'T00:00:00');
-  return `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]}`;
+  const [y, m, d] = iso.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return `${GIORNI[date.getUTCDay()]} ${d} ${MESI[m - 1]}`;
 }
 
 // ─── Storage ──────────────────────────────────────────────────
@@ -180,23 +181,23 @@ function initDefaults() {
   }
 }
 
-// ─── Week/Date helpers ────────────────────────────────────────
+// ─── Week/Date helpers (UTC-safe) ────────────────────────────
 function getWeekStart(isoDate) {
-  const d = new Date(isoDate + 'T00:00:00');
-  const dow = d.getDay();
+  const [y, m, d] = isoDate.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  const dow = date.getUTCDay();
   const diff = dow === 0 ? -6 : 1 - dow;
-  d.setDate(d.getDate() + diff);
-  return d.toISOString().slice(0, 10);
+  return new Date(Date.UTC(y, m - 1, d + diff)).toISOString().slice(0, 10);
 }
 
 function dayIndex(isoDate) {
-  return (new Date(isoDate + 'T00:00:00').getDay() + 6) % 7; // 0=Lun…6=Dom
+  const [y, m, d] = isoDate.split('-').map(Number);
+  return (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7; // 0=Lun…6=Dom
 }
 
 function addDays(isoDate, n) {
-  const d = new Date(isoDate + 'T00:00:00');
-  d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
+  const [y, m, d] = isoDate.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
 }
 
 // ─── Midnight Reset ───────────────────────────────────────────
@@ -234,8 +235,9 @@ function goBack() { window.history.back(); }
 
 function initNav() {
   const page = document.body.dataset.page;
+  const activePage = (page === 'calendario' && location.hash === '#dieta') ? 'dieta' : page;
   document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.page === page);
+    btn.classList.toggle('active', btn.dataset.page === activePage);
   });
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => goTo(btn.dataset.page));
@@ -483,9 +485,7 @@ function initHome() {
   if (playPauseBtn) playPauseBtn.addEventListener('click', pauseTimer);
   if (stopBtn)      stopBtn.addEventListener('click', stopTimer);
 
-  // Bottoni header
   document.getElementById('headerCalBtn')?.addEventListener('click', () => goTo('calendario'));
-  document.getElementById('headerDietaBtn')?.addEventListener('click', () => goTo('dieta'));
 
   // Profile avatar → go to profilo
   const avatar = document.getElementById('headerAvatar');
@@ -1199,26 +1199,14 @@ function initCalendario() {
     renderCalendario();
   });
 
-  // Tab switching
-  document.getElementById('calTabs')?.querySelectorAll('.filter-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#calTabs .filter-toggle-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const tab = btn.dataset.tab;
-      document.getElementById('panelCalendario').classList.toggle('hidden', tab !== 'calendario');
-      document.getElementById('panelDieta').classList.toggle('hidden', tab !== 'dieta');
-      const titleEl = document.getElementById('calPageTitle');
-      if (titleEl) titleEl.textContent = tab === 'dieta' ? 'Dieta' : 'Calendario';
-    });
-  });
+  // Mostra panel corretto in base all'hash di navigazione
+  const showDieta = location.hash === '#dieta';
+  document.getElementById('panelCalendario')?.classList.toggle('hidden', showDieta);
+  document.getElementById('panelDieta')?.classList.toggle('hidden', !showDieta);
+  const titleEl = document.getElementById('calPageTitle');
+  if (titleEl) titleEl.textContent = showDieta ? 'Dieta' : 'Calendario';
 
-  initDieta();
-
-  // Auto-apri tab dieta se navigazione con hash #dieta
-  if (location.hash === '#dieta') {
-    const dietaBtn = document.querySelector('#calTabs [data-tab="dieta"]');
-    if (dietaBtn) dietaBtn.click();
-  }
+  if (showDieta) initDieta();
 }
 
 function renderCalendario() {
