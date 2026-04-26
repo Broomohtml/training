@@ -1,17 +1,28 @@
 'use strict';
 
 // ─── Config ───────────────────────────────────────────────────
-const APP_VERSION = '0.0.6';
+const APP_VERSION = '0.0.7';
 
 // ─── Keys ─────────────────────────────────────────────────────
 const KEYS = {
-  esercizi: 'tr_esercizi',
-  schede:   'tr_schede',
-  todo:     'tr_todo_today',
-  sessioni: 'tr_sessioni',
-  profilo:  'tr_profilo',
-  settings: 'tr_settings',
-  dieta:    'tr_dieta_today',
+  esercizi:       'tr_esercizi',
+  schede:         'tr_schede',
+  todo:           'tr_todo_today',
+  sessioni:       'tr_sessioni',
+  profilo:        'tr_profilo',
+  settings:       'tr_settings',
+  dieta:          'tr_dieta_today',   // legacy — solo acqua/note ora
+  dieta_piano:    'tr_dieta_piano',
+  dieta_settimana:'tr_dieta_settimana',
+};
+
+const RATING_MENSA = {
+  SS: { kcal: 700, prot: 50, label: 'Insalata Pollo / Bresaola' },
+  S:  { kcal: 700, prot: 40, label: 'Riso Bianco + Proteina magra' },
+  A:  { kcal: 700, prot: 35, label: 'Riso Venere Salmone e Zucchine' },
+  B:  { kcal: 700, prot: 20, label: 'Pasta al pomodoro semplice' },
+  C:  { kcal: 700, prot: 25, label: 'Secondi elaborati / Carne Rossa' },
+  F:  { kcal: 700, prot: 15, label: 'Fritture / Lasagne / Pizza' },
 };
 
 // ─── Utils ────────────────────────────────────────────────────
@@ -69,8 +80,12 @@ function getTodo()      { return load(KEYS.todo, { data: '', tipo: 'gym', comple
 function getSessioni()  { return load(KEYS.sessioni, []); }
 function getProfilo()   { return load(KEYS.profilo, { nome: '' }); }
 function getSettings()  { return load(KEYS.settings, { tipo: 'gym' }); }
-function getDieta()     { return load(KEYS.dieta, { data: '', acqua: 0, proteine: 0, calorie: 0, note: '' }); }
-function saveDieta(obj) { store(KEYS.dieta, obj); }
+function getDieta()            { return load(KEYS.dieta, { data: '', acqua: 0, proteine: 0, calorie: 0, note: '' }); }
+function saveDieta(obj)        { store(KEYS.dieta, obj); }
+function getDietaPiano()       { return load(KEYS.dieta_piano, null); }
+function saveDietaPiano(arr)   { store(KEYS.dieta_piano, arr); }
+function getDietaSettimana()   { return load(KEYS.dieta_settimana, { settimana_start: '', giorni: {} }); }
+function saveDietaSettimana(o) { store(KEYS.dieta_settimana, o); }
 
 function saveEserciziStore(arr) { store(KEYS.esercizi, arr); }
 function saveSchede(arr)        { store(KEYS.schede, arr); }
@@ -100,6 +115,85 @@ function initDefaults() {
 
   saveEserciziStore(esercizi);
   saveSchede(schede);
+
+  if (!getDietaPiano()) {
+    saveDietaPiano([
+      {
+        id: 'colazione', nome: 'Colazione', ora: '07:30', tipo: 'rotazione', opzione_attiva: 'dolce',
+        opzioni: [
+          { id: 'dolce', nome: 'Dolce', giorni: [
+            { alimento: 'Yogurt greco, avena e miele',       grammi: '200g+50g+10g',          kcal: 350, prot: 20 },
+            { alimento: 'Pancake proteici alla banana',      grammi: '1 uovo+50g+1 banana',   kcal: 380, prot: 22 },
+            { alimento: "Porridge d'avena e mela",           grammi: '50g+150ml+10g',          kcal: 340, prot: 12 },
+            { alimento: 'Yogurt greco e frutti rossi',       grammi: '200g+100g+15g',          kcal: 330, prot: 22 },
+            { alimento: "Pancake con burro d'arachidi",      grammi: '1 uovo+50g+15g',         kcal: 390, prot: 18 },
+            { alimento: 'Bowl di frutta e yogurt',           grammi: '200g+150g+15g',          kcal: 310, prot: 18 },
+            { alimento: 'Pancake con gocce di cioccolato',   grammi: '2 uova+50g+10g',         kcal: 420, prot: 24 },
+          ]},
+          { id: 'salata', nome: 'Salata', giorni: [
+            { alimento: 'Toast integrale con fesa di tacchino', grammi: '2 fette (60g)+60g',            kcal: 320, prot: 28 },
+            { alimento: 'Omelette di soli albumi e spinaci',    grammi: '3 albumi+1 uovo+100g',         kcal: 310, prot: 32 },
+            { alimento: 'Pane integrale con uovo in camicia',   grammi: '2 fette (60g)+1 uovo',         kcal: 330, prot: 18 },
+            { alimento: 'Toast con tonno al naturale',          grammi: '2 fette (60g)+80g',            kcal: 300, prot: 30 },
+            { alimento: '2 Uova sode e pane tostato',           grammi: '1 fetta (30g)+2 uova',         kcal: 340, prot: 20 },
+            { alimento: 'Omelette uovo intero e formaggio',     grammi: '1 uovo+30g',                   kcal: 280, prot: 22 },
+            { alimento: 'Uova strapazzate e avocado toast',     grammi: '50g avocado+1 fetta+2 uova',   kcal: 450, prot: 24 },
+          ]},
+        ],
+      },
+      {
+        id: 'spuntino_mattina', nome: 'Spuntino Mattina', ora: '10:30', tipo: 'scelta', opzione_attiva: 'mandorle',
+        opzioni: [
+          { id: 'mandorle', nome: 'Mandorle',      alimento: 'Mandorle',      grammi: '20g',   kcal: 120, prot: 4 },
+          { id: 'frutta',   nome: 'Frutta Fresca', alimento: 'Frutta Fresca', grammi: '150g',  kcal: 80,  prot: 1 },
+        ],
+      },
+      {
+        id: 'pranzo', nome: 'Pranzo (Mensa)', ora: '12:30', tipo: 'mensa',
+        rating_suggerito: ['SS', 'S', 'A', 'SS', 'S', null, null],
+      },
+      {
+        id: 'spuntino_pm', nome: 'Spuntino PM', ora: '16:30', tipo: 'scelta', opzione_attiva: 'bresaola',
+        opzioni: [
+          { id: 'bresaola', nome: 'Bresaola',       alimento: 'Bresaola',       grammi: '50g', kcal: 120, prot: 20 },
+          { id: 'shake',    nome: 'Shake Proteico', alimento: 'Shake Proteico', grammi: '30g', kcal: 130, prot: 24 },
+        ],
+      },
+      {
+        id: 'cena', nome: 'Cena', ora: '20:00', tipo: 'rotazione', opzione_attiva: 'standard',
+        opzioni: [
+          { id: 'standard', nome: 'Standard', giorni: [
+            { alimento: 'Pollo e Broccoli',                   grammi: '150g+200g+50g', kcal: 550, prot: 45 },
+            { alimento: 'Coscia di Pollo e Insalata',         grammi: '180g+150g',     kcal: 500, prot: 40 },
+            { alimento: 'Tacchino e Zucchine',                grammi: '150g+200g+60g', kcal: 580, prot: 42 },
+            { alimento: 'Arista di maiale, Insalata e Pane',  grammi: '150g+200g+50g', kcal: 520, prot: 38 },
+            { alimento: 'Bistecca magra e Insalata',          grammi: '150g+200g',     kcal: 600, prot: 48 },
+            { alimento: 'Cena libera',                        grammi: '-',             kcal: null, prot: null },
+            { alimento: 'Tacchino e Zucchine',                grammi: '150g+250g',     kcal: 400, prot: 38 },
+          ]},
+        ],
+      },
+    ]);
+  }
+}
+
+// ─── Week/Date helpers ────────────────────────────────────────
+function getWeekStart(isoDate) {
+  const d = new Date(isoDate + 'T00:00:00');
+  const dow = d.getDay();
+  const diff = dow === 0 ? -6 : 1 - dow;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function dayIndex(isoDate) {
+  return (new Date(isoDate + 'T00:00:00').getDay() + 6) % 7; // 0=Lun…6=Dom
+}
+
+function addDays(isoDate, n) {
+  const d = new Date(isoDate + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
 }
 
 // ─── Midnight Reset ───────────────────────────────────────────
@@ -109,9 +203,10 @@ function checkMidnightReset() {
   if (todo.data !== today) {
     saveTodo({ data: today, tipo: todo.tipo || 'gym', completati: [] });
   }
-  const dieta = getDieta();
-  if (dieta.data !== today) {
-    saveDieta({ data: today, acqua: 0, proteine: 0, calorie: 0, note: '' });
+  const ws = getWeekStart(today);
+  const settimana = getDietaSettimana();
+  if (settimana.settimana_start !== ws) {
+    saveDietaSettimana({ settimana_start: ws, giorni: {} });
   }
 }
 
@@ -1167,44 +1262,480 @@ function hideDayDetail() {
   if (detail) detail.style.display = 'none';
 }
 
-// ─── DIETA ────────────────────────────────────────────────────
+// ─── DIETA v2 ─────────────────────────────────────────────────
+let _dietaCurrentDay = getToday();
+
+function getDayRecord(isoDate) {
+  const s = getDietaSettimana();
+  return s.giorni[isoDate] || { acqua: 0, note: '', pasti: {} };
+}
+
+function saveDayRecord(isoDate, rec) {
+  const s = getDietaSettimana();
+  s.giorni[isoDate] = rec;
+  saveDietaSettimana(s);
+}
+
+function getMealData(slot, isoDate) {
+  const di = dayIndex(isoDate);
+  if (slot.tipo === 'scelta') {
+    return slot.opzioni.find(o => o.id === slot.opzione_attiva) || slot.opzioni[0];
+  }
+  if (slot.tipo === 'rotazione') {
+    const opt = slot.opzioni.find(o => o.id === slot.opzione_attiva) || slot.opzioni[0];
+    if (!opt) return null;
+    const giorno = opt.giorni[di] || {};
+    return { ...giorno, _opt_nome: opt.nome };
+  }
+  return null; // mensa handled separately
+}
+
 function initDieta() {
-  const dieta   = getDieta();
-  const labelEl = document.getElementById('dietaTodayLabel');
-  if (labelEl) labelEl.textContent = `Oggi — ${dateLabel()}`;
-
-  updateDietaUI(dieta);
-
-  document.querySelectorAll('[data-field][data-delta]').forEach(btn => {
+  // Sub-tab switching
+  document.querySelectorAll('.dieta-subtab').forEach(btn => {
     btn.addEventListener('click', () => {
-      const field = btn.dataset.field;
-      const delta = parseInt(btn.dataset.delta);
-      const d     = getDieta();
-      d[field]    = Math.max(0, (d[field] || 0) + delta);
-      saveDieta(d);
-      updateDietaUI(d);
+      document.querySelectorAll('.dieta-subtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.subtab;
+      document.getElementById('dietaPanelOggi').classList.toggle('hidden', tab !== 'oggi');
+      document.getElementById('dietaPanelPiano').classList.toggle('hidden', tab !== 'piano');
+      if (tab === 'piano') renderPianoSlots();
     });
   });
 
-  const noteInput = document.getElementById('dietaNoteInput');
-  if (noteInput) {
-    noteInput.value = dieta.note || '';
-    noteInput.addEventListener('input', () => {
-      const d  = getDieta();
-      d.note   = noteInput.value;
-      saveDieta(d);
-    });
-  }
+  // Day navigation
+  _dietaCurrentDay = getToday();
+  document.getElementById('dietaDayPrev')?.addEventListener('click', () => {
+    const ws = getWeekStart(getToday());
+    if (_dietaCurrentDay > ws) {
+      _dietaCurrentDay = addDays(_dietaCurrentDay, -1);
+      renderOggi();
+    }
+  });
+  document.getElementById('dietaDayNext')?.addEventListener('click', () => {
+    const today = getToday();
+    if (_dietaCurrentDay < today) {
+      _dietaCurrentDay = addDays(_dietaCurrentDay, 1);
+      renderOggi();
+    }
+  });
+
+  // Acqua
+  document.getElementById('acquaMinus')?.addEventListener('click', () => adjustAcqua(-1));
+  document.getElementById('acquaPlus')?.addEventListener('click',  () => adjustAcqua(1));
+
+  // Note
+  document.getElementById('dietaNoteInput')?.addEventListener('input', e => {
+    const rec = getDayRecord(_dietaCurrentDay);
+    rec.note = e.target.value;
+    saveDayRecord(_dietaCurrentDay, rec);
+  });
+
+  // Piano modals
+  initModalClose('addOpzioneOverlay',    'addOpzioneClose',    () => closeModal('addOpzioneOverlay'));
+  initModalClose('editRotazioneOverlay', 'editRotazioneClose', () => closeModal('editRotazioneOverlay'));
+  document.getElementById('addOpzioneSubmit')?.addEventListener('click', handleAddOpzioneSubmit);
+  document.getElementById('editRotazioneSave')?.addEventListener('click', handleEditRotazioneSave);
+
+  renderOggi();
 }
 
-function updateDietaUI(dieta) {
-  const acquaEl   = document.getElementById('valAcqua');
-  const protEl    = document.getElementById('valProteine');
-  const calEl     = document.getElementById('valCalorie');
+function adjustAcqua(delta) {
+  const rec = getDayRecord(_dietaCurrentDay);
+  rec.acqua = Math.max(0, (rec.acqua || 0) + delta);
+  saveDayRecord(_dietaCurrentDay, rec);
+  const el = document.getElementById('valAcqua');
+  if (el) el.textContent = rec.acqua;
+}
 
-  if (acquaEl) acquaEl.innerHTML = `${dieta.acqua || 0}`;
-  if (protEl)  protEl.innerHTML  = `${dieta.proteine || 0}<span style="font-size:11px;opacity:.6">g</span>`;
-  if (calEl)   calEl.innerHTML   = `${dieta.calorie || 0}<span style="font-size:11px;opacity:.6">kcal</span>`;
+function renderOggi() {
+  const today = getToday();
+  const ws    = getWeekStart(today);
+  const isToday = _dietaCurrentDay === today;
+  const isReadOnly = _dietaCurrentDay !== today;
+
+  // Day label
+  const labelEl = document.getElementById('dietaDayLabel');
+  if (labelEl) {
+    const d = new Date(_dietaCurrentDay + 'T00:00:00');
+    const dayName = GIORNI[d.getDay()];
+    const dateStr = `${d.getDate()} ${MESI[d.getMonth()]}`;
+    labelEl.innerHTML = isToday
+      ? `Oggi<small>${dateStr}</small>`
+      : `${dayName}<small>${dateStr}</small>`;
+  }
+
+  // Nav buttons
+  const prevBtn = document.getElementById('dietaDayPrev');
+  const nextBtn = document.getElementById('dietaDayNext');
+  if (prevBtn) prevBtn.disabled = _dietaCurrentDay <= ws;
+  if (nextBtn) nextBtn.disabled = _dietaCurrentDay >= today;
+
+  // Acqua + note
+  const rec = getDayRecord(_dietaCurrentDay);
+  const acquaEl = document.getElementById('valAcqua');
+  if (acquaEl) acquaEl.textContent = rec.acqua || 0;
+  const noteEl = document.getElementById('dietaNoteInput');
+  if (noteEl) {
+    noteEl.value = rec.note || '';
+    noteEl.disabled = isReadOnly;
+  }
+
+  // Meal cards
+  renderMealCards(isReadOnly);
+
+  // Macro bar
+  updateMacroBar();
+}
+
+function renderMealCards(readOnly) {
+  const container = document.getElementById('dietaMealCards');
+  if (!container) return;
+  const piano = getDietaPiano();
+  if (!piano) return;
+  const rec = getDayRecord(_dietaCurrentDay);
+  const pasti = rec.pasti || {};
+
+  container.innerHTML = piano.map(slot => {
+    if (slot.tipo === 'mensa') return buildMensaCard(slot, pasti[slot.id], readOnly);
+    return buildPastoCard(slot, pasti[slot.id], readOnly);
+  }).join('');
+
+  // Attach events
+  container.querySelectorAll('.pasto-check-btn').forEach(btn => {
+    btn.addEventListener('click', () => togglePasto(btn.dataset.slot));
+  });
+  container.querySelectorAll('.mensa-rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => selectRating(btn.dataset.slot, btn.dataset.rating));
+  });
+}
+
+function buildPastoCard(slot, pastoRec, readOnly) {
+  const meal = getMealData(slot, _dietaCurrentDay);
+  if (!meal) return '';
+  const mangiato = pastoRec?.mangiato || false;
+  const kcal = meal.kcal ?? '—';
+  const prot = meal.prot ?? '—';
+
+  return `
+    <div class="pasto-card ${mangiato ? 'mangiato' : ''}" data-slot="${slot.id}">
+      <div class="pasto-card-top">
+        <button class="pasto-check-btn ${readOnly ? 'disabled' : ''}" data-slot="${slot.id}" ${readOnly ? 'disabled' : ''}>
+          <span class="material-symbols-outlined">check</span>
+        </button>
+        <div class="pasto-info">
+          <div class="pasto-ora">${slot.ora}</div>
+          <div class="pasto-nome">${slot.nome}</div>
+          <div class="pasto-alimento">${meal.alimento || '—'}</div>
+        </div>
+        <div class="pasto-macros">
+          <span class="pasto-kcal">${kcal !== null && kcal !== '—' ? kcal + ' kcal' : '—'}</span>
+          <span class="pasto-prot">${prot !== null && prot !== '—' ? prot + 'g prot' : ''}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildMensaCard(slot, pastoRec, readOnly) {
+  const selectedRating = pastoRec?.rating || null;
+  const di = dayIndex(_dietaCurrentDay);
+  const suggerito = slot.rating_suggerito?.[di] || null;
+
+  const btnHtml = Object.keys(RATING_MENSA).map(r => {
+    const sel = selectedRating === r;
+    return `<button class="mensa-rating-btn ${sel ? 'selected-' + r : ''}" data-slot="${slot.id}" data-rating="${r}" ${readOnly && !sel ? 'disabled' : ''}>${r}<small>${RATING_MENSA[r].prot}g</small></button>`;
+  }).join('');
+
+  const infoHtml = selectedRating ? `
+    <div class="mensa-selected-info">
+      ${RATING_MENSA[selectedRating].label} · ${RATING_MENSA[selectedRating].kcal} kcal · ${RATING_MENSA[selectedRating].prot}g prot
+    </div>` : (suggerito ? `<div class="mensa-selected-info" style="opacity:.5">Suggerito oggi: ${suggerito}</div>` : '');
+
+  return `
+    <div class="pasto-card ${selectedRating ? 'mangiato' : ''}" data-slot="${slot.id}">
+      <div class="pasto-card-top">
+        <div class="pasto-info">
+          <div class="pasto-ora">${slot.ora}</div>
+          <div class="pasto-nome">${slot.nome}</div>
+        </div>
+        ${selectedRating ? `<div class="pasto-macros"><span class="pasto-kcal">${RATING_MENSA[selectedRating].kcal} kcal</span><span class="pasto-prot">${RATING_MENSA[selectedRating].prot}g prot</span></div>` : ''}
+      </div>
+      <div class="mensa-rating-wrap">
+        <div class="mensa-rating-btns">${btnHtml}</div>
+        ${infoHtml}
+      </div>
+    </div>`;
+}
+
+function togglePasto(slotId) {
+  const rec = getDayRecord(_dietaCurrentDay);
+  if (!rec.pasti) rec.pasti = {};
+  const cur = rec.pasti[slotId] || {};
+  cur.mangiato = !cur.mangiato;
+  rec.pasti[slotId] = cur;
+  saveDayRecord(_dietaCurrentDay, rec);
+  renderMealCards(false);
+  updateMacroBar();
+}
+
+function selectRating(slotId, rating) {
+  const rec = getDayRecord(_dietaCurrentDay);
+  if (!rec.pasti) rec.pasti = {};
+  const cur = rec.pasti[slotId] || {};
+  cur.rating = cur.rating === rating ? null : rating; // toggle off if same
+  cur.mangiato = !!cur.rating;
+  rec.pasti[slotId] = cur;
+  saveDayRecord(_dietaCurrentDay, rec);
+  renderMealCards(false);
+  updateMacroBar();
+}
+
+function updateMacroBar() {
+  const piano = getDietaPiano();
+  if (!piano) return;
+  const rec = getDayRecord(_dietaCurrentDay);
+  const pasti = rec.pasti || {};
+  const profilo = getProfilo();
+  const kcalTarget = profilo.kcal_target || 1810;
+  const protTarget = profilo.prot_target || 140;
+
+  let totalKcal = 0, totalProt = 0;
+
+  piano.forEach(slot => {
+    const p = pasti[slot.id];
+    if (!p?.mangiato) return;
+    if (slot.tipo === 'mensa') {
+      const r = RATING_MENSA[p.rating];
+      if (r) { totalKcal += r.kcal; totalProt += r.prot; }
+    } else {
+      const meal = getMealData(slot, _dietaCurrentDay);
+      if (meal?.kcal) totalKcal += meal.kcal;
+      if (meal?.prot) totalProt += meal.prot;
+    }
+  });
+
+  const pctKcal = Math.min(100, Math.round((totalKcal / kcalTarget) * 100));
+  const pctProt = Math.min(100, Math.round((totalProt / protTarget) * 100));
+
+  const kFill = document.getElementById('macroKcalFill');
+  const pFill = document.getElementById('macroPRotFill');
+  const kVal  = document.getElementById('macroKcalVal');
+  const pVal  = document.getElementById('macroPRotVal');
+
+  if (kFill) kFill.style.width = pctKcal + '%';
+  if (pFill) pFill.style.width = pctProt + '%';
+  if (kVal)  kVal.textContent  = `${totalKcal} / ${kcalTarget}`;
+  if (pVal)  pVal.textContent  = `${totalProt}g / ${protTarget}g`;
+}
+
+// ─── PIANO TAB ────────────────────────────────────────────────
+function renderPianoSlots() {
+  const container = document.getElementById('dietaPianoSlots');
+  if (!container) return;
+  const piano = getDietaPiano();
+  if (!piano) return;
+  const today = getToday();
+  const di = dayIndex(today);
+
+  container.innerHTML = piano.map(slot => {
+    if (slot.tipo === 'mensa') return buildMensaPianoSlot(slot);
+    return buildPianoSlot(slot, di);
+  }).join('');
+
+  // Option select events
+  container.querySelectorAll('.piano-option').forEach(el => {
+    el.addEventListener('click', () => {
+      const slotId = el.dataset.slot;
+      const optId  = el.dataset.opt;
+      setOpzioneAttiva(slotId, optId);
+    });
+  });
+
+  // Add option
+  container.querySelectorAll('.piano-add-btn').forEach(btn => {
+    btn.addEventListener('click', () => openAddOpzione(btn.dataset.slot));
+  });
+
+  // Edit rotazione
+  container.querySelectorAll('.rot-edit-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openEditRotazione(btn.dataset.slot, btn.dataset.opt);
+    });
+  });
+}
+
+function buildPianoSlot(slot, di) {
+  const optsHtml = slot.opzioni.map(opt => {
+    const isActive = opt.id === slot.opzione_attiva;
+    let sub = '';
+    if (slot.tipo === 'rotazione') {
+      const g = opt.giorni[di];
+      sub = g ? `${g.alimento}` : '';
+    } else {
+      sub = opt.alimento || '';
+    }
+    const macros = slot.tipo === 'rotazione'
+      ? (opt.giorni[di]?.kcal ? `${opt.giorni[di].kcal} kcal` : '')
+      : (opt.kcal ? `${opt.kcal} kcal` : '');
+
+    const editBtn = slot.tipo === 'rotazione'
+      ? `<button class="rot-edit-btn" data-slot="${slot.id}" data-opt="${opt.id}"><span class="material-symbols-outlined">edit</span></button>`
+      : '';
+
+    return `
+      <div class="piano-option ${isActive ? 'active' : ''}" data-slot="${slot.id}" data-opt="${opt.id}">
+        <span class="piano-opt-check"><span class="material-symbols-outlined">check</span></span>
+        <div class="piano-opt-info">
+          <div class="piano-opt-nome">${opt.nome}</div>
+          ${sub ? `<div class="piano-opt-sub">${sub}</div>` : ''}
+        </div>
+        <span class="piano-opt-macros">${macros}</span>
+        ${editBtn}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="piano-slot">
+      <div class="piano-slot-header">
+        <span class="piano-slot-nome">${slot.nome}</span>
+        <span class="piano-slot-ora">${slot.ora}</span>
+      </div>
+      ${optsHtml}
+      <button class="piano-add-btn" data-slot="${slot.id}">
+        <span class="material-symbols-outlined">add</span>
+        Aggiungi opzione
+      </button>
+    </div>`;
+}
+
+function buildMensaPianoSlot(slot) {
+  const di = dayIndex(getToday());
+  const sug = slot.rating_suggerito?.[di];
+  return `
+    <div class="piano-slot">
+      <div class="piano-slot-header">
+        <span class="piano-slot-nome">${slot.nome}</span>
+        <span class="piano-slot-ora">${slot.ora}</span>
+      </div>
+      <div style="padding:10px 14px;font-size:13px;color:var(--text-2)">
+        Sistema a rating SS → F. ${sug ? `Oggi suggerito: <strong>${sug}</strong>` : 'Seleziona il rating dal tab Oggi.'}
+      </div>
+    </div>`;
+}
+
+function setOpzioneAttiva(slotId, optId) {
+  const piano = getDietaPiano();
+  const slot  = piano.find(s => s.id === slotId);
+  if (!slot || slot.opzione_attiva === optId) return;
+  slot.opzione_attiva = optId;
+  saveDietaPiano(piano);
+  renderPianoSlots();
+  renderMealCards(false);
+  updateMacroBar();
+  showToast('Opzione aggiornata');
+}
+
+function openAddOpzione(slotId) {
+  const piano = getDietaPiano();
+  const slot  = piano.find(s => s.id === slotId);
+  if (!slot) return;
+  const titleEl = document.getElementById('addOpzioneTitle');
+  if (titleEl) titleEl.textContent = `Nuova opzione — ${slot.nome}`;
+  document.getElementById('addOpzioneForm').dataset.slotId = slotId;
+  document.getElementById('addOpzioneForm').reset();
+  openModal('addOpzioneOverlay');
+}
+
+function handleAddOpzioneSubmit() {
+  const form   = document.getElementById('addOpzioneForm');
+  const slotId = form.dataset.slotId;
+  const nome   = form.querySelector('[name="nome"]').value.trim();
+  if (!nome) { showToast('Inserisci un nome'); return; }
+
+  const piano = getDietaPiano();
+  const slot  = piano.find(s => s.id === slotId);
+  if (!slot) return;
+
+  const kcal = parseInt(form.querySelector('[name="kcal"]').value) || null;
+  const prot = parseInt(form.querySelector('[name="prot"]').value) || null;
+  const alim = form.querySelector('[name="alimento"]').value.trim();
+  const gram = form.querySelector('[name="grammi"]').value.trim();
+
+  const newId = slotId + '_' + uuid();
+
+  if (slot.tipo === 'rotazione') {
+    // New rotazione option: same data for all 7 days
+    slot.opzioni.push({
+      id: newId, nome,
+      giorni: Array(7).fill(null).map(() => ({ alimento: alim, grammi: gram, kcal, prot })),
+    });
+  } else {
+    slot.opzioni.push({ id: newId, nome, alimento: alim, grammi: gram, kcal, prot });
+  }
+
+  saveDietaPiano(piano);
+  closeModal('addOpzioneOverlay');
+  renderPianoSlots();
+  showToast('Opzione aggiunta');
+}
+
+function openEditRotazione(slotId, optId) {
+  const piano = getDietaPiano();
+  const slot  = piano.find(s => s.id === slotId);
+  const opt   = slot?.opzioni.find(o => o.id === optId);
+  if (!opt) return;
+
+  const titleEl = document.getElementById('editRotazioneTitle');
+  if (titleEl) titleEl.textContent = `${slot.nome} — ${opt.nome}`;
+  const body = document.getElementById('editRotazioneBody');
+  body.dataset.slotId = slotId;
+  body.dataset.optId  = optId;
+
+  const daysShort = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+  body.innerHTML = opt.giorni.map((g, i) => `
+    <div class="rot-day-row" data-day="${i}">
+      <span class="rot-day-label">${daysShort[i]}</span>
+      <div class="rot-day-fields">
+        <input type="text" class="form-input" style="font-size:13px;padding:8px 10px" data-field="alimento" value="${g?.alimento || ''}" placeholder="Alimento" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+          <input type="text" class="form-input" style="font-size:12px;padding:7px 8px" data-field="grammi" value="${g?.grammi || ''}" placeholder="Grammi" />
+          <input type="number" class="form-input" style="font-size:12px;padding:7px 8px" data-field="kcal" value="${g?.kcal || ''}" placeholder="Kcal" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;margin-top:4px">
+          <input type="number" class="form-input" style="font-size:12px;padding:7px 8px" data-field="prot" value="${g?.prot || ''}" placeholder="Prot (g)" />
+        </div>
+      </div>
+    </div>`).join('');
+
+  openModal('editRotazioneOverlay');
+}
+
+function handleEditRotazioneSave() {
+  const body   = document.getElementById('editRotazioneBody');
+  const slotId = body.dataset.slotId;
+  const optId  = body.dataset.optId;
+  const piano  = getDietaPiano();
+  const slot   = piano.find(s => s.id === slotId);
+  const opt    = slot?.opzioni.find(o => o.id === optId);
+  if (!opt) return;
+
+  body.querySelectorAll('.rot-day-row').forEach(row => {
+    const i = parseInt(row.dataset.day);
+    opt.giorni[i] = {
+      alimento: row.querySelector('[data-field="alimento"]').value.trim(),
+      grammi:   row.querySelector('[data-field="grammi"]').value.trim(),
+      kcal:     parseInt(row.querySelector('[data-field="kcal"]').value) || null,
+      prot:     parseInt(row.querySelector('[data-field="prot"]').value) || null,
+    };
+  });
+
+  saveDietaPiano(piano);
+  closeModal('editRotazioneOverlay');
+  renderPianoSlots();
+  renderMealCards(false);
+  updateMacroBar();
+  showToast('Rotazione salvata');
 }
 
 // ─── DOMContentLoaded ─────────────────────────────────────────

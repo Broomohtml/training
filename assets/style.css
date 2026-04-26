@@ -1612,3 +1612,426 @@ select.form-input {
   border-color: var(--violet-3);
   color: var(--violet-3);
 }
+
+/* ─── 27. DIETA v2 ──────────────────────────────────────────── */
+
+/* Sub-tabs: Oggi / Piano */
+.dieta-subtabs {
+  display: flex;
+  gap: 0;
+  padding: 0 16px 12px;
+  flex-shrink: 0;
+}
+
+.dieta-subtab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: var(--surface-3);
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dieta-subtab:first-child { border-radius: var(--r-md) 0 0 var(--r-md); }
+.dieta-subtab:last-child  { border-radius: 0 var(--r-md) var(--r-md) 0; }
+
+.dieta-subtab.active {
+  background: var(--violet);
+  color: #fff;
+}
+
+.dieta-panel-inner { display: flex; flex-direction: column; }
+.dieta-panel-inner.hidden { display: none; }
+
+/* Day navigation */
+.dieta-day-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px 12px;
+  flex-shrink: 0;
+}
+
+.dieta-day-nav-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-2);
+  transition: all 0.12s;
+}
+
+.dieta-day-nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+.dieta-day-nav-btn .material-symbols-outlined { font-size: 18px; }
+
+.dieta-day-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  text-align: center;
+}
+
+.dieta-day-label small {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-3);
+  margin-top: 1px;
+}
+
+/* Macro progress bar */
+.dieta-macro-bar {
+  margin: 0 16px 12px;
+  padding: 12px 14px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dieta-macro-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dieta-macro-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.dieta-macro-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dieta-macro-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.dieta-macro-fill.kcal { background: linear-gradient(90deg, var(--violet), var(--violet-2)); }
+.dieta-macro-fill.prot { background: linear-gradient(90deg, var(--green), #00FFB2); }
+
+.dieta-macro-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  width: 72px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Pasto card */
+.pasto-card {
+  margin: 0 16px 8px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.pasto-card.mangiato { border-color: rgba(0,216,124,0.25); }
+
+.pasto-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+}
+
+.pasto-check-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.18);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: transparent;
+  transition: all 0.15s;
+}
+
+.pasto-check-btn .material-symbols-outlined {
+  font-size: 15px;
+  font-variation-settings: 'FILL' 1, 'wght' 600;
+}
+
+.pasto-card.mangiato .pasto-check-btn {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+
+.pasto-info { flex: 1; min-width: 0; }
+
+.pasto-ora {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  margin-bottom: 1px;
+}
+
+.pasto-nome {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pasto-alimento {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pasto-macros {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.pasto-kcal {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--violet-3);
+}
+
+.pasto-prot {
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+/* Mensa rating buttons */
+.mensa-rating-wrap {
+  padding: 0 14px 12px;
+}
+
+.mensa-rating-btns {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+}
+
+.mensa-rating-btn {
+  padding: 8px 4px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  line-height: 1.2;
+}
+
+.mensa-rating-btn small {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.mensa-rating-btn.selected-SS { background: rgba(76,175,80,0.2);  border-color: rgba(76,175,80,0.5);  color: #81C784; }
+.mensa-rating-btn.selected-S  { background: rgba(139,195,74,0.2); border-color: rgba(139,195,74,0.5); color: #AED581; }
+.mensa-rating-btn.selected-A  { background: rgba(255,235,59,0.15);border-color: rgba(255,235,59,0.4); color: #FFF176; }
+.mensa-rating-btn.selected-B  { background: rgba(255,193,7,0.15); border-color: rgba(255,193,7,0.4);  color: #FFD54F; }
+.mensa-rating-btn.selected-C  { background: rgba(255,152,0,0.15); border-color: rgba(255,152,0,0.4);  color: #FFCC80; }
+.mensa-rating-btn.selected-F  { background: rgba(244,67,54,0.15); border-color: rgba(244,67,54,0.4);  color: #EF9A9A; }
+
+.mensa-selected-info {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
+/* Piano tab */
+.piano-slot {
+  margin: 0 16px 10px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.piano-slot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.piano-slot-nome {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+}
+
+.piano-slot-ora {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.piano-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.piano-option:last-of-type { border-bottom: none; }
+.piano-option:active { background: rgba(255,255,255,0.03); }
+
+.piano-option.active { background: var(--violet-soft); }
+
+.piano-opt-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: transparent;
+  transition: all 0.15s;
+}
+
+.piano-option.active .piano-opt-check {
+  background: var(--violet);
+  border-color: var(--violet);
+  color: #fff;
+}
+
+.piano-opt-check .material-symbols-outlined { font-size: 12px; font-variation-settings: 'FILL' 1, 'wght' 700; }
+
+.piano-opt-info { flex: 1; min-width: 0; }
+
+.piano-opt-nome {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.piano-option.active .piano-opt-nome { color: var(--violet-3); font-weight: 600; }
+
+.piano-opt-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.piano-opt-macros {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.piano-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-top: 1px dashed rgba(255,255,255,0.07);
+  transition: color 0.12s;
+}
+
+.piano-add-btn:active { color: var(--violet-3); }
+.piano-add-btn .material-symbols-outlined { font-size: 16px; }
+
+/* Rotazione edit sheet rows */
+.rot-day-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rot-day-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-3);
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.rot-day-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rot-day-alimento {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rot-day-macros {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.rot-edit-btn {
+  width: 28px; height: 28px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.rot-edit-btn .material-symbols-outlined { font-size: 15px; }

@@ -89,86 +89,159 @@
 
     <!-- ── TAB: Dieta ─────────────────────────────────────── -->
     <div class="cal-panel hidden" id="panelDieta">
-      <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
-        <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
 
-          <!-- Oggi label -->
-          <div style="padding:12px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--text-3)" id="dietaTodayLabel">—</div>
+      <!-- Sub-tabs Oggi / Piano -->
+      <div class="dieta-subtabs">
+        <button class="dieta-subtab active" data-subtab="oggi">Oggi</button>
+        <button class="dieta-subtab" data-subtab="piano">Piano</button>
+      </div>
 
-          <!-- Trackers -->
-          <div class="dieta-trackers">
+      <!-- ── Pannello OGGI ── -->
+      <div class="dieta-panel-inner" id="dietaPanelOggi">
+        <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
+          <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+
+            <!-- Day navigation -->
+            <div class="dieta-day-nav">
+              <button class="dieta-day-nav-btn" id="dietaDayPrev">
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+              <div class="dieta-day-label" id="dietaDayLabel">—</div>
+              <button class="dieta-day-nav-btn" id="dietaDayNext">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+
+            <!-- Macro progress bar -->
+            <div class="dieta-macro-bar">
+              <div class="dieta-macro-row">
+                <span class="dieta-macro-label">Kcal</span>
+                <div class="dieta-macro-track"><div class="dieta-macro-fill kcal" id="macroKcalFill" style="width:0%"></div></div>
+                <span class="dieta-macro-val" id="macroKcalVal">0 / 1810</span>
+              </div>
+              <div class="dieta-macro-row">
+                <span class="dieta-macro-label">Prot</span>
+                <div class="dieta-macro-track"><div class="dieta-macro-fill prot" id="macroPRotFill" style="width:0%"></div></div>
+                <span class="dieta-macro-val" id="macroPRotVal">0g / 140g</span>
+              </div>
+            </div>
+
+            <!-- 5 Meal cards (rendered by JS) -->
+            <div id="dietaMealCards"></div>
 
             <!-- Acqua -->
-            <div class="dieta-tracker-card">
-              <div class="dieta-tracker-icon">💧</div>
-              <div class="dieta-tracker-info">
-                <div class="dieta-tracker-label">Acqua</div>
-                <div class="dieta-tracker-sub">Obiettivo: 8 bicchieri</div>
-              </div>
-              <div class="dieta-tracker-controls">
-                <button class="dieta-ctrl-btn" data-field="acqua" data-delta="-1">
-                  <span class="material-symbols-outlined">remove</span>
-                </button>
-                <span class="dieta-tracker-value" id="valAcqua">0</span>
-                <button class="dieta-ctrl-btn" data-field="acqua" data-delta="1">
-                  <span class="material-symbols-outlined">add</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Proteine -->
-            <div class="dieta-tracker-card">
-              <div class="dieta-tracker-icon">🥩</div>
-              <div class="dieta-tracker-info">
-                <div class="dieta-tracker-label">Proteine</div>
-                <div class="dieta-tracker-sub">Obiettivo: 140g / giorno</div>
-              </div>
-              <div class="dieta-tracker-controls">
-                <button class="dieta-ctrl-btn" data-field="proteine" data-delta="-10">
-                  <span class="material-symbols-outlined">remove</span>
-                </button>
-                <span class="dieta-tracker-value" id="valProteine">0<span style="font-size:11px;opacity:.6">g</span></span>
-                <button class="dieta-ctrl-btn" data-field="proteine" data-delta="10">
-                  <span class="material-symbols-outlined">add</span>
-                </button>
+            <div class="dieta-trackers" style="padding-top:4px">
+              <div class="dieta-tracker-card">
+                <div class="dieta-tracker-icon">💧</div>
+                <div class="dieta-tracker-info">
+                  <div class="dieta-tracker-label">Acqua</div>
+                  <div class="dieta-tracker-sub">Obiettivo: 8 bicchieri</div>
+                </div>
+                <div class="dieta-tracker-controls">
+                  <button class="dieta-ctrl-btn" id="acquaMinus">
+                    <span class="material-symbols-outlined">remove</span>
+                  </button>
+                  <span class="dieta-tracker-value" id="valAcqua">0</span>
+                  <button class="dieta-ctrl-btn" id="acquaPlus">
+                    <span class="material-symbols-outlined">add</span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <!-- Calorie -->
-            <div class="dieta-tracker-card">
-              <div class="dieta-tracker-icon">🔥</div>
-              <div class="dieta-tracker-info">
-                <div class="dieta-tracker-label">Calorie</div>
-                <div class="dieta-tracker-sub">Obiettivo: ~1800 kcal</div>
-              </div>
-              <div class="dieta-tracker-controls">
-                <button class="dieta-ctrl-btn" data-field="calorie" data-delta="-50">
-                  <span class="material-symbols-outlined">remove</span>
-                </button>
-                <span class="dieta-tracker-value" id="valCalorie">0<span style="font-size:11px;opacity:.6">kcal</span></span>
-                <button class="dieta-ctrl-btn" data-field="calorie" data-delta="50">
-                  <span class="material-symbols-outlined">add</span>
-                </button>
-              </div>
+            <!-- Note -->
+            <div style="padding:8px 16px 8px">
+              <label class="form-label" style="display:block;margin-bottom:8px">Note del giorno</label>
+              <textarea id="dietaNoteInput" class="form-input" rows="3" placeholder="Pasti, sensazioni, sodio alto, acqua ritenuta..."></textarea>
+            </div>
+
+            <!-- Consigli -->
+            <div class="dieta-tips">
+              <div class="dieta-tips-title">Consigli rapidi</div>
+              <div class="dieta-tip">🧂 Riduci il sodio nei giorni di riposo per diminuire la ritenzione idrica</div>
+              <div class="dieta-tip">🥚 Aggiungi una fonte proteica ad ogni pasto (uova, pollo, legumi)</div>
+              <div class="dieta-tip">🥦 Verdure a foglia verde = volume senza calorie extra</div>
+              <div class="dieta-tip">⏰ Mangia l'ultimo pasto almeno 2h prima di dormire</div>
             </div>
 
           </div>
+        </div>
+      </div>
 
-          <!-- Note -->
-          <div style="padding:16px 16px 8px">
-            <label class="form-label" style="display:block;margin-bottom:8px">Note del giorno</label>
-            <textarea id="dietaNoteInput" class="form-input" rows="4" placeholder="Pasti, sensazioni, sodio alto, acqua ritenuta..."></textarea>
+      <!-- ── Pannello PIANO ── -->
+      <div class="dieta-panel-inner hidden" id="dietaPanelPiano">
+        <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
+          <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+            <div style="padding:8px 0 4px" id="dietaPianoSlots"></div>
           </div>
+        </div>
+      </div>
 
-          <!-- Consigli -->
-          <div class="dieta-tips">
-            <div class="dieta-tips-title">Consigli rapidi</div>
-            <div class="dieta-tip">🧂 Riduci il sodio nei giorni di riposo per diminuire la ritenzione idrica</div>
-            <div class="dieta-tip">🥚 Aggiungi una fonte proteica ad ogni pasto (uova, pollo, legumi)</div>
-            <div class="dieta-tip">🥦 Verdure a foglia verde = volume senza calorie extra</div>
-            <div class="dieta-tip">⏰ Mangia l'ultimo pasto almeno 2h prima di dormire</div>
-          </div>
+    </div>
 
+    <!-- ── Modal: aggiungi opzione ────────────────────────── -->
+    <div class="modal-overlay" id="addOpzioneOverlay">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+          <h2 class="modal-title" id="addOpzioneTitle">Nuova opzione</h2>
+          <button class="modal-close-btn" id="addOpzioneClose">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addOpzioneForm" data-slot-id="">
+            <div class="form-section">
+              <div class="form-row">
+                <label class="form-label">Nome opzione</label>
+                <input type="text" name="nome" class="form-input" placeholder="Es. Fiocchi d'avena" />
+              </div>
+              <div class="form-row">
+                <label class="form-label">Alimento</label>
+                <input type="text" name="alimento" class="form-input" placeholder="Es. Fiocchi d'avena + Latte" />
+              </div>
+              <div class="form-row-2">
+                <div>
+                  <label class="form-label">Grammi</label>
+                  <input type="text" name="grammi" class="form-input" placeholder="50g+200ml" />
+                </div>
+                <div>
+                  <label class="form-label">Kcal</label>
+                  <input type="number" name="kcal" class="form-input" placeholder="320" />
+                </div>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Proteine (g)</label>
+                <input type="number" name="prot" class="form-input" placeholder="12" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="submit-btn" id="addOpzioneSubmit">
+            <span class="material-symbols-outlined">add</span>
+            Aggiungi opzione
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Modal: modifica rotazione ─────────────────────── -->
+    <div class="modal-overlay" id="editRotazioneOverlay">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+          <h2 class="modal-title" id="editRotazioneTitle">Modifica rotazione</h2>
+          <button class="modal-close-btn" id="editRotazioneClose">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body" id="editRotazioneBody" data-slot-id="" data-opt-id=""></div>
+        <div class="modal-footer">
+          <button class="submit-btn" id="editRotazioneSave">
+            <span class="material-symbols-outlined">save</span>
+            Salva
+          </button>
         </div>
       </div>
     </div>
