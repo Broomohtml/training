@@ -123,6 +123,21 @@
     </button>
   </nav>
 
+  <!-- ── MODAL: Exercise Detail ───────────────────────────── -->
+  <div class="modal-overlay" id="exDetailOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title" id="exDetailName">—</h2>
+        <button class="modal-close-btn" id="exDetailClose">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body" id="exDetailBody"></div>
+      <div class="modal-footer" id="exDetailFooter"></div>
+    </div>
+  </div>
+
   <script src="assets/app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

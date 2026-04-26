@@ -223,6 +223,108 @@ function updateTimerUI() {
   if (name) name.textContent = timer.name;
 }
 
+// ─── EXERCISE DETAIL ──────────────────────────────────────────
+function openExerciseDetail(exId, tipo) {
+  const ex = getEsercizi().find(e => e.id === exId);
+  if (!ex) return;
+
+  document.getElementById('exDetailName').textContent = ex.nome;
+
+  const diff      = ex.difficolta || 'base';
+  const reps      = ex.ripetizioni ?? (ex.timer_sec ? `${ex.timer_sec}s` : '—');
+  const repsLabel = `${ex.serie} × ${reps}`;
+
+  const body = document.getElementById('exDetailBody');
+  const footer = document.getElementById('exDetailFooter');
+
+  body.innerHTML = `
+    <div class="ex-detail-badges">
+      <span class="badge badge--reps">${repsLabel}</span>
+      ${ex.focus ? `<span class="badge badge--focus">${ex.focus}</span>` : ''}
+      <span class="badge badge--${diff}">${diff.charAt(0).toUpperCase() + diff.slice(1)}</span>
+    </div>
+
+    ${ex.descrizione ? `
+    <div class="ex-detail-section">
+      <div class="ex-detail-section-label">Descrizione</div>
+      <div class="ex-detail-text">${ex.descrizione}</div>
+    </div>` : ''}
+
+    ${ex.note ? `
+    <div class="ex-detail-section">
+      <div class="ex-detail-section-label">Note sulla forma</div>
+      <div class="ex-detail-text">${ex.note}</div>
+    </div>` : ''}
+
+    ${ex.tempo ? `
+    <div class="ex-detail-section">
+      <div class="ex-detail-section-label">Tempo / Cadenza</div>
+      <div class="ex-detail-text">${ex.tempo}</div>
+    </div>` : ''}
+
+    ${ex.youtube ? `
+    <div class="ex-detail-section">
+      <a href="${ex.youtube}" target="_blank" rel="noopener" class="ex-yt-btn">
+        <span class="material-symbols-outlined">play_circle</span>
+        Guarda su YouTube
+      </a>
+    </div>` : ''}
+
+    <div class="ex-detail-section">
+      <div class="ex-detail-section-label">Aggiorna progressi</div>
+      <div class="ex-progress-row">
+        <div class="ex-progress-field">
+          <label>Serie</label>
+          <input type="number" id="exEditSerie" class="form-input" value="${ex.serie || ''}" min="1" placeholder="3" />
+        </div>
+        <div class="ex-progress-field">
+          <label>Ripetizioni</label>
+          <input type="text" id="exEditReps" class="form-input" value="${ex.ripetizioni || ''}" placeholder="8-12" />
+        </div>
+      </div>
+      <div class="ex-progress-row" style="padding-top:10px">
+        <div class="ex-progress-field">
+          <label>Peso (kg)</label>
+          <input type="number" id="exEditPeso" class="form-input" value="${ex.peso || ''}" step="0.5" min="0" placeholder="0" />
+        </div>
+        <div class="ex-progress-field">
+          <label>Timer (sec)</label>
+          <input type="number" id="exEditTimer" class="form-input" value="${ex.timer_sec || ''}" min="1" placeholder="30" />
+        </div>
+      </div>
+    </div>`;
+
+  footer.innerHTML = `
+    <button class="submit-btn" id="exDetailSave">
+      <span class="material-symbols-outlined">save</span>
+      Salva progressi
+    </button>`;
+
+  document.getElementById('exDetailSave').addEventListener('click', () => {
+    saveExerciseProgress(exId, tipo);
+  });
+
+  openModal('exDetailOverlay');
+}
+
+function saveExerciseProgress(exId, tipo) {
+  const esercizi = getEsercizi();
+  const idx      = esercizi.findIndex(e => e.id === exId);
+  if (idx === -1) return;
+
+  const serie    = parseInt(document.getElementById('exEditSerie').value) || esercizi[idx].serie;
+  const rips     = document.getElementById('exEditReps').value.trim() || esercizi[idx].ripetizioni;
+  const peso     = parseFloat(document.getElementById('exEditPeso').value) || null;
+  const timerSec = parseInt(document.getElementById('exEditTimer').value) || null;
+
+  esercizi[idx] = { ...esercizi[idx], serie, ripetizioni: rips, peso, timer_sec: timerSec };
+  saveEserciziStore(esercizi);
+
+  closeModal('exDetailOverlay');
+  renderExerciseList(tipo || getSettings().tipo);
+  showToast('Progressi salvati ✓');
+}
+
 // ─── HOME PAGE ────────────────────────────────────────────────
 function initHome() {
   // Hero
@@ -269,6 +371,12 @@ function initHome() {
   if (completeBtn) {
     completeBtn.addEventListener('click', completeWorkout);
   }
+
+  // Exercise detail modal
+  document.getElementById('exDetailClose')?.addEventListener('click', () => closeModal('exDetailOverlay'));
+  document.getElementById('exDetailOverlay')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('exDetailOverlay')) closeModal('exDetailOverlay');
+  });
 
   // Timer widget controls
   const playPauseBtn = document.getElementById('timerPlayPause');
@@ -340,15 +448,22 @@ function renderExerciseList(tipo) {
 
   // Attach events
   list.querySelectorAll('.exercise-check').forEach(btn => {
-    btn.addEventListener('click', () => handleCheck(btn.dataset.id, tipo));
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      handleCheck(btn.dataset.id, tipo);
+    });
   });
 
   list.querySelectorAll('.exercise-timer-btn').forEach(btn => {
-    const exId = btn.dataset.id;
-    const ex   = esercizi.find(e => e.id === exId);
-    if (ex && ex.timer_sec) {
-      btn.addEventListener('click', () => startTimer(ex.timer_sec, ex.nome));
-    }
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const ex = esercizi.find(e => e.id === btn.dataset.id);
+      if (ex && ex.timer_sec) startTimer(ex.timer_sec, ex.nome);
+    });
+  });
+
+  list.querySelectorAll('.exercise-card').forEach(card => {
+    card.addEventListener('click', () => openExerciseDetail(card.dataset.id, tipo));
   });
 
   updateCompleteBtn(completeBtn, scheda, completati);

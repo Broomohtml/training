@@ -1241,7 +1241,77 @@ select.form-input {
   transform: translateX(-50%) translateY(0);
 }
 
-/* ─── 24. CALENDARIO ────────────────────────────────────────── */
+/* ─── 24. EXERCISE DETAIL SHEET ────────────────────────────── */
+.ex-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 20px 14px;
+}
+
+.ex-detail-section {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.ex-detail-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+.ex-detail-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.ex-yt-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255,75,75,0.25);
+  background: rgba(255,75,75,0.08);
+  color: #FF5E5E;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.ex-yt-btn:active { background: rgba(255,75,75,0.18); }
+
+.ex-yt-btn .material-symbols-outlined {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+.ex-progress-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 20px 0;
+  border-top: 1px solid var(--border);
+}
+
+.ex-progress-field label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+/* ─── 25. CALENDARIO ────────────────────────────────────────── */
 .cal-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .cal-panel.hidden { display: none; }
 
