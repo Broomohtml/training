@@ -1,7 +1,7 @@
 'use strict';
 
 // ─── Config ───────────────────────────────────────────────────
-const APP_VERSION = '0.1.0';
+const APP_VERSION = '0.0.1';
 
 // ─── Keys ─────────────────────────────────────────────────────
 const KEYS = {
@@ -880,9 +880,9 @@ function initProfilo() {
     showToast('Profilo salvato');
   });
 
-  document.getElementById('versionEl')?.setAttribute('data-v', APP_VERSION);
-  const vEl = document.getElementById('versionEl');
-  if (vEl) vEl.textContent = APP_VERSION;
+  document.querySelectorAll('#versionEl, #versionDisplay').forEach(el => {
+    el.textContent = APP_VERSION;
+  });
 
   document.getElementById('resetDataBtn')?.addEventListener('click', () => {
     if (!confirm('Cancellare tutti i dati? L\'operazione non è reversibile.')) return;
