@@ -1,0 +1,1517 @@
+/* Training App — style.css v0.1.0 */
+
+/* ─── 1. RESET & TOKENS ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg:         #0B0B15;
+  --surface-1:  #13131F;
+  --surface-2:  #1C1C2E;
+  --surface-3:  #252538;
+
+  --violet:      #7B2FFF;
+  --violet-2:    #9D5CFF;
+  --violet-3:    #C4A0FF;
+  --violet-soft: rgba(123,47,255,0.12);
+  --violet-glow: rgba(123,47,255,0.28);
+
+  --green:      #00D87C;
+  --green-soft: rgba(0,216,124,0.12);
+
+  --text-1: #FFFFFF;
+  --text-2: rgba(255,255,255,0.55);
+  --text-3: rgba(255,255,255,0.28);
+
+  --border:  rgba(255,255,255,0.07);
+  --danger:  #FF4B4B;
+  --danger-soft: rgba(255,75,75,0.12);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+
+  --nav-height: 70px;
+}
+
+/* ─── 2. BODY & LAYOUT ─────────────────────────────────────── */
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  display: flex;
+  flex-direction: column;
+  height: var(--screen-height, 100dvh);
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  opacity: 1;
+  transition: opacity 0.08s ease;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ─── 3. BACKGROUND ─────────────────────────────────────────── */
+.home-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 55% at 5% 22%, rgba(123,47,255,0.70) 0%, transparent 100%),
+    radial-gradient(ellipse 75% 55% at 95% 22%, rgba(0,216,124,0.55) 0%, transparent 100%),
+    var(--bg);
+}
+
+.main-content, .app-header, .page-top-bar, .bottom-nav {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── 4. APP HEADER (Home) ──────────────────────────────────── */
+.app-header {
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.header-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--violet-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff;
+  cursor: pointer;
+}
+
+.header-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.header-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-1);
+}
+
+.header-icon-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* ─── 5. PAGE TOP BAR (pagine secondarie) ───────────────────── */
+.page-top-bar {
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.page-back-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-1);
+  flex-shrink: 0;
+}
+
+.page-back-btn .material-symbols-outlined { font-size: 20px; }
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ─── 6. BOTTOM NAV ─────────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  top: calc(var(--screen-height, 100dvh) - max(8px, env(safe-area-inset-bottom, 8px)));
+  transform: translateY(-100%);
+  height: var(--nav-height);
+  background: rgba(18,18,30,0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  transition: color 0.15s;
+  border-radius: 20px;
+}
+
+.nav-item.active { color: var(--violet-2); }
+
+.nav-icon {
+  font-size: 24px;
+  font-variation-settings: 'FILL' 0, 'wght' 300;
+  transition: font-variation-settings 0.15s;
+}
+
+.nav-item.active .nav-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* ─── 7. HOME HERO ──────────────────────────────────────────── */
+.home-hero {
+  padding: 8px 20px 16px;
+  flex-shrink: 0;
+}
+
+.hero-day {
+  font-family: 'DM Mono', monospace;
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text-1);
+}
+
+.hero-date {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+
+.hero-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  background: var(--violet-soft);
+  border: 1px solid var(--violet-glow);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--violet-3);
+}
+
+.hero-streak .material-symbols-outlined {
+  font-size: 14px;
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+/* ─── 8. SCHEDA TYPE TOGGLE (Gym / Home) ────────────────────── */
+.scheda-type-toggle {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 14px;
+  flex-shrink: 0;
+}
+
+.scheda-type-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scheda-type-btn .material-symbols-outlined {
+  font-size: 18px;
+  font-variation-settings: 'FILL' 0, 'wght' 300;
+}
+
+.scheda-type-btn.active {
+  background: var(--violet-soft);
+  border-color: var(--violet-glow);
+  color: var(--violet-3);
+}
+
+.scheda-type-btn.active .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 500;
+}
+
+/* ─── 9. SHEET & SCROLL ─────────────────────────────────────── */
+.page-list-sheet {
+  background: rgba(14,14,24,0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 24px 24px 0 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  flex-shrink: 0;
+}
+
+.list-sheet-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-2);
+}
+
+.page-list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  padding-bottom: 100px;
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0px, black 24px,
+    black calc(100% - 180px),
+    transparent calc(100% - 60px)
+  );
+  mask-image: linear-gradient(to bottom,
+    transparent 0px, black 24px,
+    black calc(100% - 180px),
+    transparent calc(100% - 60px)
+  );
+}
+
+/* ─── 10. EXERCISE CARDS (Home checklist) ───────────────────── */
+.exercise-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+
+.exercise-card:active { background: rgba(255,255,255,0.03); }
+
+.exercise-card.done {
+  opacity: 0.45;
+}
+
+.exercise-check {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.20);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.15s;
+  color: transparent;
+}
+
+.exercise-check .material-symbols-outlined {
+  font-size: 15px;
+  font-variation-settings: 'FILL' 1, 'wght' 600;
+}
+
+.exercise-card.done .exercise-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+
+.exercise-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-name {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exercise-card.done .exercise-name {
+  text-decoration: line-through;
+  color: var(--text-2);
+}
+
+.exercise-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.exercise-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge--reps {
+  font-family: 'DM Mono', monospace;
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+
+.badge--focus {
+  background: var(--violet-soft);
+  color: var(--violet-3);
+}
+
+.badge--base {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.badge--intermedio {
+  background: var(--violet-soft);
+  color: var(--violet-2);
+}
+
+.badge--avanzato {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.exercise-timer-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-3);
+  color: var(--text-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.exercise-timer-btn .material-symbols-outlined {
+  font-size: 18px;
+  font-variation-settings: 'FILL' 0, 'wght' 300;
+  color: var(--violet-2);
+}
+
+.exercise-timer-btn:active {
+  background: var(--violet-soft);
+  border-color: var(--violet-glow);
+}
+
+/* ─── 11. TIMER WIDGET (floating above nav) ─────────────────── */
+.timer-widget {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  top: calc(var(--screen-height, 100dvh) - max(8px, env(safe-area-inset-bottom, 8px)) - var(--nav-height) - 12px);
+  transform: translateY(-100%);
+  background: var(--surface-2);
+  border: 1px solid var(--violet-glow);
+  border-radius: var(--r-xl);
+  padding: 14px 16px;
+  z-index: 90;
+  display: none;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 0 32px rgba(123,47,255,0.25);
+}
+
+.timer-widget.active { display: flex; }
+
+.timer-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--violet-soft);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.timer-icon .material-symbols-outlined {
+  font-size: 22px;
+  color: var(--violet-2);
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+.timer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.timer-name {
+  font-size: 12px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timer-countdown {
+  font-family: 'DM Mono', monospace;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.timer-bar-wrap {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.timer-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--violet), var(--violet-2));
+  border-radius: 2px;
+  transition: width 0.9s linear;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.timer-ctrl-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-1);
+}
+
+.timer-ctrl-btn .material-symbols-outlined {
+  font-size: 18px;
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+/* ─── 12. COMPLETE WORKOUT BUTTON ───────────────────────────── */
+.complete-workout-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  opacity: 0.5;
+}
+
+.complete-workout-btn.ready {
+  opacity: 1;
+  box-shadow: 0 0 16px rgba(0,216,124,0.25);
+}
+
+.complete-workout-btn .material-symbols-outlined {
+  font-size: 15px;
+  font-variation-settings: 'FILL' 1, 'wght' 500;
+}
+
+/* ─── 13. EMPTY STATE ───────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state .material-symbols-outlined {
+  font-size: 48px;
+  color: var(--text-3);
+  font-variation-settings: 'FILL' 0, 'wght' 200;
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.empty-state-sub {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.empty-state-btn {
+  margin-top: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--violet-glow);
+  background: var(--violet-soft);
+  color: var(--violet-3);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ─── 14. SCHEDE PAGE ───────────────────────────────────────── */
+.schede-section {
+  padding: 0 16px 8px;
+}
+
+.schede-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-3);
+  padding: 14px 4px 8px;
+}
+
+.schede-section-label .material-symbols-outlined {
+  font-size: 14px;
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+.scheda-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scheda-card:active { background: var(--surface-2); }
+
+.scheda-card.attiva {
+  border-color: var(--violet-glow);
+  background: var(--violet-soft);
+}
+
+.scheda-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.scheda-card.attiva .scheda-icon {
+  background: var(--violet-glow);
+}
+
+.scheda-icon .material-symbols-outlined {
+  font-size: 22px;
+  color: var(--text-2);
+  font-variation-settings: 'FILL' 0, 'wght' 300;
+}
+
+.scheda-card.attiva .scheda-icon .material-symbols-outlined {
+  color: var(--violet-2);
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+.scheda-info { flex: 1; }
+
+.scheda-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.scheda-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.scheda-card.attiva .scheda-sub { color: var(--violet-3); }
+
+.scheda-active-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--violet);
+  color: #fff;
+}
+
+.add-scheda-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 16px;
+  border-radius: var(--r-lg);
+  border: 1.5px dashed rgba(255,255,255,0.10);
+  color: var(--text-3);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.15s;
+}
+
+.add-scheda-card:active {
+  border-color: var(--violet-3);
+  color: var(--violet-3);
+}
+
+/* ─── 15. MODAL / BOTTOM SHEET ──────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-sheet {
+  width: 100%;
+  background: var(--surface-2);
+  border-radius: 24px 24px 0 0;
+  border-top: 1px solid var(--border);
+  padding-bottom: max(32px, env(safe-area-inset-bottom, 32px));
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.open .modal-sheet {
+  transform: translateY(0);
+}
+
+.modal-handle {
+  width: 36px; height: 4px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 4px;
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.modal-close-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-2);
+}
+
+.modal-close-btn .material-symbols-outlined { font-size: 18px; }
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+}
+
+.modal-footer {
+  padding: 12px 20px 0;
+  flex-shrink: 0;
+}
+
+/* ─── 16. DETAIL EXERCISE ROWS (in scheda sheet) ────────────── */
+.detail-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-exercise-info { flex: 1; min-width: 0; }
+
+.detail-exercise-name {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail-exercise-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.detail-row-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.icon-btn-sm {
+  width: 30px; height: 30px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-3);
+  transition: all 0.12s;
+}
+
+.icon-btn-sm:active { background: rgba(255,255,255,0.07); }
+.icon-btn-sm.danger { color: var(--danger); }
+.icon-btn-sm .material-symbols-outlined { font-size: 18px; }
+
+/* ─── 17. POOL PICKER ───────────────────────────────────────── */
+.pool-search-wrap {
+  padding: 8px 20px 4px;
+  flex-shrink: 0;
+}
+
+.pool-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.pool-exercise-row:active { background: rgba(255,255,255,0.04); }
+
+.pool-exercise-name { font-size: 14px; font-weight: 500; }
+.pool-exercise-sub  { font-size: 11px; color: var(--text-3); }
+
+.pool-add-icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--violet-soft);
+  border: 1px solid var(--violet-glow);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--violet-2);
+}
+
+.pool-add-icon .material-symbols-outlined { font-size: 16px; }
+
+/* ─── 18. ESERCIZIO FORM ────────────────────────────────────── */
+.form-section {
+  padding: 12px 20px 4px;
+}
+
+.form-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+
+.form-row {
+  margin-bottom: 10px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--text-1);
+  -webkit-appearance: none;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus { border-color: var(--violet-2); }
+
+.form-input::placeholder { color: var(--text-3); }
+
+textarea.form-input {
+  resize: none;
+  min-height: 72px;
+  font-size: 14px;
+}
+
+select.form-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* ─── 19. PROGRESSI PAGE ────────────────────────────────────── */
+.streak-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px 12px;
+}
+
+.streak-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.streak-card.highlight {
+  border-color: var(--violet-glow);
+  background: var(--violet-soft);
+}
+
+.streak-card-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+}
+
+.streak-card.highlight .streak-card-label { color: var(--violet-3); }
+
+.streak-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+.streak-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.streak-card.highlight .streak-value { color: var(--violet-3); }
+
+.streak-sub {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.streak-card-wide {
+  grid-column: 1 / -1;
+}
+
+.corsa-btn {
+  margin: 0 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.corsa-btn:active {
+  background: var(--green-soft);
+  border-color: rgba(0,216,124,0.3);
+  color: var(--green);
+}
+
+.corsa-btn .material-symbols-outlined {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 1, 'wght' 400;
+  color: var(--green);
+}
+
+.sessioni-label {
+  padding: 12px 20px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-3);
+}
+
+.sessione-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sessione-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sessione-dot.gym  { background: var(--violet); }
+.sessione-dot.home { background: var(--green); }
+.sessione-dot.corsa { background: #FFB800; }
+
+.sessione-info { flex: 1; }
+.sessione-tipo { font-size: 14px; font-weight: 500; }
+.sessione-data { font-size: 12px; color: var(--text-3); }
+
+.sessione-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* ─── 20. PROFILO PAGE ──────────────────────────────────────── */
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 20px;
+  gap: 10px;
+}
+
+.profile-avatar-large {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--violet-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.profile-name-display {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.profile-sub {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.profile-form {
+  padding: 0 16px;
+}
+
+.app-info-section {
+  padding: 24px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.app-info-row span:last-child {
+  color: var(--text-3);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+}
+
+.danger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255,75,75,0.20);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 16px;
+  width: calc(100% - 32px);
+}
+
+.danger-btn .material-symbols-outlined { font-size: 18px; }
+
+/* ─── 21. BUTTONS ───────────────────────────────────────────── */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--r-lg);
+  border: none;
+  background: var(--violet);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submit-btn:active { opacity: 0.85; }
+
+.submit-btn.secondary {
+  background: var(--surface-3);
+  color: var(--text-2);
+  margin-top: 8px;
+}
+
+/* ─── 22. FILTER TOGGLE ─────────────────────────────────────── */
+.filter-toggle {
+  display: flex;
+  background: var(--surface-3);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.filter-toggle-btn {
+  flex: 1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-toggle-btn.active {
+  background: var(--violet);
+  color: #fff;
+}
+
+/* ─── 23. TOAST ─────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-height) + max(8px, env(safe-area-inset-bottom, 8px)) + 80px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 300;
+  white-space: nowrap;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ─── 24. CALENDARIO ────────────────────────────────────────── */
+.cal-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.cal-panel.hidden { display: none; }
+
+.cal-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px 12px;
+}
+
+.cal-nav-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-2);
+}
+
+.cal-nav-btn .material-symbols-outlined { font-size: 20px; }
+.cal-nav-btn:active { background: var(--surface-3); }
+
+.cal-month-label {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.cal-legend {
+  display: flex;
+  gap: 16px;
+  padding: 0 20px 12px;
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.cal-legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.cal-legend-dot.gym   { background: #FF5E5E; }
+.cal-legend-dot.corsa { background: #4B8BFF; }
+.cal-legend-dot.home  { background: var(--green); }
+
+.cal-day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 12px 6px;
+  gap: 4px;
+}
+
+.cal-day-labels span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 0 12px;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.12s;
+  gap: 2px;
+}
+
+.cal-cell:active { background: rgba(255,255,255,0.05); }
+.cal-cell.empty  { pointer-events: none; }
+
+.cal-cell.today {
+  background: var(--violet-soft);
+  border: 1px solid var(--violet-glow);
+}
+
+.cal-cell.selected {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.cal-cell-num {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.cal-cell.today .cal-cell-num    { color: var(--violet-3); font-weight: 700; }
+.cal-cell.other-month .cal-cell-num { color: var(--text-3); }
+
+.cal-dots {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  min-height: 5px;
+}
+
+.cal-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cal-dot.gym   { background: #FF5E5E; }
+.cal-dot.corsa { background: #4B8BFF; }
+.cal-dot.home  { background: var(--green); }
+
+/* Day detail strip */
+.cal-day-detail {
+  margin: 12px 16px 0;
+  padding: 14px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.cal-day-detail-date {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+.cal-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cal-detail-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── 25. DIETA ─────────────────────────────────────────────── */
+.dieta-trackers {
+  padding: 0 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dieta-tracker-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.dieta-tracker-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+
+.dieta-tracker-info { flex: 1; }
+
+.dieta-tracker-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dieta-tracker-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.dieta-tracker-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.dieta-ctrl-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-2);
+  transition: all 0.12s;
+}
+
+.dieta-ctrl-btn:active {
+  background: var(--violet-soft);
+  border-color: var(--violet-glow);
+  color: var(--violet-3);
+}
+
+.dieta-ctrl-btn .material-symbols-outlined { font-size: 16px; }
+
+.dieta-tracker-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  min-width: 40px;
+  text-align: center;
+}
+
+.dieta-tips {
+  margin: 8px 16px 16px;
+  padding: 14px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dieta-tips-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+
+.dieta-tip {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
+/* ─── 26. ADD CARD ──────────────────────────────────────────── */
+.add-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  margin: 8px 16px 0;
+  padding: 13px;
+  border: 1.5px dashed rgba(255,255,255,0.10);
+  border-radius: var(--r-lg);
+  background: transparent;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-card:active {
+  border-color: var(--violet-3);
+  color: var(--violet-3);
+}

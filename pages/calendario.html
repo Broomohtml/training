@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0B0B15" />
+  <title>Calendario · Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/style.css" />
+  <script>
+    document.documentElement.style.setProperty('--screen-height', window.screen.height + 'px');
+    function setAppHeight() {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', h + 'px');
+    }
+    setAppHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => { setAppHeight(); setTimeout(setAppHeight, 300); });
+    } else {
+      window.addEventListener('resize', setAppHeight);
+    }
+  </script>
+</head>
+<body data-page="calendario">
+
+  <!-- Header -->
+  <div class="page-top-bar">
+    <button class="page-back-btn" onclick="goBack()" aria-label="Indietro">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <span class="page-title" id="calPageTitle">Calendario</span>
+  </div>
+
+  <!-- Tabs -->
+  <div style="padding: 0 16px 12px; flex-shrink:0; position:relative; z-index:1;">
+    <div class="filter-toggle" id="calTabs">
+      <button class="filter-toggle-btn active" data-tab="calendario">Calendario</button>
+      <button class="filter-toggle-btn" data-tab="dieta">Dieta</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- ── TAB: Calendario ───────────────────────────────── -->
+    <div class="cal-panel" id="panelCalendario">
+      <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
+        <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+
+          <!-- Month nav -->
+          <div class="cal-month-nav">
+            <button class="cal-nav-btn" id="calPrev">
+              <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <span class="cal-month-label" id="calMonthLabel">—</span>
+            <button class="cal-nav-btn" id="calNext">
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+
+          <!-- Legend -->
+          <div class="cal-legend">
+            <span class="cal-legend-item"><span class="cal-legend-dot gym"></span>Palestra</span>
+            <span class="cal-legend-item"><span class="cal-legend-dot corsa"></span>Corsa</span>
+            <span class="cal-legend-item"><span class="cal-legend-dot home"></span>Casa</span>
+          </div>
+
+          <!-- Day labels -->
+          <div class="cal-day-labels">
+            <span>L</span><span>M</span><span>M</span>
+            <span>G</span><span>V</span><span>S</span><span>D</span>
+          </div>
+
+          <!-- Grid -->
+          <div class="cal-grid" id="calGrid"></div>
+
+          <!-- Day detail (shown on tap) -->
+          <div class="cal-day-detail" id="calDayDetail" style="display:none">
+            <div class="cal-day-detail-date" id="calDetailDate"></div>
+            <div class="cal-day-detail-items" id="calDetailItems"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Dieta ─────────────────────────────────────── -->
+    <div class="cal-panel hidden" id="panelDieta">
+      <div class="page-list-sheet" style="border-radius:0;border:none;background:transparent;backdrop-filter:none;">
+        <div class="page-list-scroll" style="-webkit-mask-image:none;mask-image:none;">
+
+          <!-- Oggi label -->
+          <div style="padding:12px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--text-3)" id="dietaTodayLabel">—</div>
+
+          <!-- Trackers -->
+          <div class="dieta-trackers">
+
+            <!-- Acqua -->
+            <div class="dieta-tracker-card">
+              <div class="dieta-tracker-icon">💧</div>
+              <div class="dieta-tracker-info">
+                <div class="dieta-tracker-label">Acqua</div>
+                <div class="dieta-tracker-sub">Obiettivo: 8 bicchieri</div>
+              </div>
+              <div class="dieta-tracker-controls">
+                <button class="dieta-ctrl-btn" data-field="acqua" data-delta="-1">
+                  <span class="material-symbols-outlined">remove</span>
+                </button>
+                <span class="dieta-tracker-value" id="valAcqua">0</span>
+                <button class="dieta-ctrl-btn" data-field="acqua" data-delta="1">
+                  <span class="material-symbols-outlined">add</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Proteine -->
+            <div class="dieta-tracker-card">
+              <div class="dieta-tracker-icon">🥩</div>
+              <div class="dieta-tracker-info">
+                <div class="dieta-tracker-label">Proteine</div>
+                <div class="dieta-tracker-sub">Obiettivo: 140g / giorno</div>
+              </div>
+              <div class="dieta-tracker-controls">
+                <button class="dieta-ctrl-btn" data-field="proteine" data-delta="-10">
+                  <span class="material-symbols-outlined">remove</span>
+                </button>
+                <span class="dieta-tracker-value" id="valProteine">0<span style="font-size:11px;opacity:.6">g</span></span>
+                <button class="dieta-ctrl-btn" data-field="proteine" data-delta="10">
+                  <span class="material-symbols-outlined">add</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Calorie -->
+            <div class="dieta-tracker-card">
+              <div class="dieta-tracker-icon">🔥</div>
+              <div class="dieta-tracker-info">
+                <div class="dieta-tracker-label">Calorie</div>
+                <div class="dieta-tracker-sub">Obiettivo: ~1800 kcal</div>
+              </div>
+              <div class="dieta-tracker-controls">
+                <button class="dieta-ctrl-btn" data-field="calorie" data-delta="-50">
+                  <span class="material-symbols-outlined">remove</span>
+                </button>
+                <span class="dieta-tracker-value" id="valCalorie">0<span style="font-size:11px;opacity:.6">kcal</span></span>
+                <button class="dieta-ctrl-btn" data-field="calorie" data-delta="50">
+                  <span class="material-symbols-outlined">add</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Note -->
+          <div style="padding:16px 16px 8px">
+            <label class="form-label" style="display:block;margin-bottom:8px">Note del giorno</label>
+            <textarea id="dietaNoteInput" class="form-input" rows="4" placeholder="Pasti, sensazioni, sodio alto, acqua ritenuta..."></textarea>
+          </div>
+
+          <!-- Consigli -->
+          <div class="dieta-tips">
+            <div class="dieta-tips-title">Consigli rapidi</div>
+            <div class="dieta-tip">🧂 Riduci il sodio nei giorni di riposo per diminuire la ritenzione idrica</div>
+            <div class="dieta-tip">🥚 Aggiungi una fonte proteica ad ogni pasto (uova, pollo, legumi)</div>
+            <div class="dieta-tip">🥦 Verdure a foglia verde = volume senza calorie extra</div>
+            <div class="dieta-tip">⏰ Mangia l'ultimo pasto almeno 2h prima di dormire</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-page="home">
+      <span class="material-symbols-outlined nav-icon">home</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="schede">
+      <span class="material-symbols-outlined nav-icon">calendar_view_week</span>
+      <span class="nav-label">Schede</span>
+    </button>
+    <button class="nav-item" data-page="progressi">
+      <span class="material-symbols-outlined nav-icon">trending_up</span>
+      <span class="nav-label">Progressi</span>
+    </button>
+    <button class="nav-item" data-page="profilo">
+      <span class="material-symbols-outlined nav-icon">person</span>
+      <span class="nav-label">Profilo</span>
+    </button>
+  </nav>
+
+  <script src="../assets/app.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');</script>
+</body>
+</html>

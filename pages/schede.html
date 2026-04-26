@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0B0B15" />
+  <title>Schede · Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/style.css" />
+  <script>
+    document.documentElement.style.setProperty('--screen-height', window.screen.height + 'px');
+    function setAppHeight() {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', h + 'px');
+    }
+    setAppHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => { setAppHeight(); setTimeout(setAppHeight, 300); });
+    } else {
+      window.addEventListener('resize', setAppHeight);
+    }
+  </script>
+</head>
+<body data-page="schede">
+
+  <!-- Header -->
+  <div class="page-top-bar">
+    <span class="page-title">Schede</span>
+  </div>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-list-sheet" style="border-radius:0; border:none; background:transparent; backdrop-filter:none;">
+      <div class="page-list-scroll" style="-webkit-mask-image:none; mask-image:none;">
+
+        <!-- Palestra -->
+        <div class="schede-section">
+          <div class="schede-section-label">
+            <span class="material-symbols-outlined">fitness_center</span>
+            Palestra
+          </div>
+          <div id="gymList"></div>
+          <div class="add-scheda-card" id="addGymScheda">
+            <span class="material-symbols-outlined" style="font-size:18px">add</span>
+            Nuova scheda palestra
+          </div>
+        </div>
+
+        <!-- Casa -->
+        <div class="schede-section">
+          <div class="schede-section-label">
+            <span class="material-symbols-outlined">home</span>
+            Casa
+          </div>
+          <div id="homeList"></div>
+          <div class="add-scheda-card" id="addHomeScheda">
+            <span class="material-symbols-outlined" style="font-size:18px">add</span>
+            Nuova scheda casa
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-page="home">
+      <span class="material-symbols-outlined nav-icon">home</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="schede">
+      <span class="material-symbols-outlined nav-icon">calendar_view_week</span>
+      <span class="nav-label">Schede</span>
+    </button>
+    <button class="nav-item" data-page="progressi">
+      <span class="material-symbols-outlined nav-icon">trending_up</span>
+      <span class="nav-label">Progressi</span>
+    </button>
+    <button class="nav-item" data-page="profilo">
+      <span class="material-symbols-outlined nav-icon">person</span>
+      <span class="nav-label">Profilo</span>
+    </button>
+  </nav>
+
+  <!-- ── MODAL: Scheda Detail ──────────────────────────────── -->
+  <div class="modal-overlay" id="schedeDetailOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title" id="schedeDetailTitle">Scheda</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="filter-toggle-btn" id="schedeDetailSetActive" style="border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:5px 12px;background:rgba(255,255,255,0.07);font-size:12px;font-weight:600;color:var(--text-2)">Imposta attiva</button>
+          <button class="modal-close-btn danger" id="schedeDetailDelete" aria-label="Elimina" style="background:var(--danger-soft);color:var(--danger)">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+          <button class="modal-close-btn" id="schedeDetailClose" aria-label="Chiudi">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" id="schedeDetailExercises"></div>
+      <div class="modal-footer">
+        <button class="submit-btn" id="addEsercizioBtn">
+          <span class="material-symbols-outlined">add</span>
+          Aggiungi esercizio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: Pool Picker ────────────────────────────────── -->
+  <div class="modal-overlay" id="poolPickerOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">Aggiungi esercizio</h2>
+        <button class="modal-close-btn" id="poolPickerClose">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="pool-search-wrap">
+        <input type="search" id="poolSearchInput" class="form-input" placeholder="Cerca nel pool..." autocomplete="off" />
+      </div>
+      <div class="modal-body" id="poolPickerList"></div>
+      <div class="modal-footer">
+        <button class="submit-btn secondary" id="createNewEsercizioBtn">
+          <span class="material-symbols-outlined">add_circle</span>
+          Crea nuovo esercizio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: Esercizio Form ─────────────────────────────── -->
+  <div class="modal-overlay" id="esercizioFormOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title" id="esercizioFormTitle">Nuovo esercizio</h2>
+        <button class="modal-close-btn" id="esercizioFormClose">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="esercizioForm" autocomplete="off">
+
+          <div class="form-section">
+            <div class="form-section-label">Informazioni base</div>
+            <div class="form-row">
+              <label class="form-label">Nome *</label>
+              <input type="text" name="nome" class="form-input" placeholder="Es. Pull-ups" required />
+            </div>
+            <div class="form-row">
+              <label class="form-label">Descrizione</label>
+              <input type="text" name="descrizione" class="form-input" placeholder="Es. Trazioni alla sbarra" />
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label class="form-label">Serie</label>
+                <input type="number" name="serie" class="form-input" placeholder="3" min="1" />
+              </div>
+              <div>
+                <label class="form-label">Ripetizioni</label>
+                <input type="text" name="ripetizioni" class="form-input" placeholder="8-12" />
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Difficoltà</label>
+              <select name="difficolta" class="form-input">
+                <option value="base">Base</option>
+                <option value="intermedio">Intermedio</option>
+                <option value="avanzato">Avanzato</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-label">Dettagli tecnici</div>
+            <div class="form-row">
+              <label class="form-label">Focus muscolare</label>
+              <input type="text" name="focus" class="form-input" placeholder="Es. Schiena e bicipiti" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">Tempo / Cadenza</label>
+              <input type="text" name="tempo" class="form-input" placeholder="Es. 2s discesa, 1s salita" />
+            </div>
+            <div class="form-row-2">
+              <div>
+                <label class="form-label">Timer (secondi)</label>
+                <input type="number" name="timer_sec" class="form-input" placeholder="30" min="1" />
+              </div>
+              <div>
+                <label class="form-label">Peso (kg)</label>
+                <input type="number" name="peso" class="form-input" placeholder="0" step="0.5" min="0" />
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Note forma</label>
+              <textarea name="note" class="form-input" placeholder="Accorgimenti sulla forma corretta..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-label">Extra</div>
+            <div class="form-row">
+              <label class="form-label">Link YouTube</label>
+              <input type="url" name="youtube" class="form-input" placeholder="https://youtube.com/..." />
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="submit-btn" id="esercizioFormSubmit">Salva esercizio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: Add Scheda ─────────────────────────────────── -->
+  <div class="modal-overlay" id="addSchedaOverlay">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">Nuova scheda</h2>
+        <button class="modal-close-btn" id="addSchedaClose">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-section">
+          <div class="form-row">
+            <label class="form-label">Tipo</label>
+            <div id="newSchedaTipoLabel" style="font-size:14px;font-weight:600;color:var(--text-2);padding:4px 0">🏋️ Palestra</div>
+            <input type="hidden" id="newSchedaTipo" value="gym" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">Nome scheda *</label>
+            <input type="text" id="newSchedaNome" class="form-input" placeholder="Es. Scheda A, Upper Body..." />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="submit-btn" id="addSchedaSubmit">Crea scheda</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/app.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');</script>
+</body>
+</html>

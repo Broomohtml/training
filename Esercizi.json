@@ -1,0 +1,65 @@
+[
+{
+"nome_esercizio": "Pull-ups",
+"descrizione_esercizio": "Trazioni alla sbarra",
+"serie": 3,
+"ripetizioni": "Massime",
+"note_esercizio": "Fino a esaurimento tecnico (quando la forma peggiora, fermati)",
+"descrizione_focus": "Larghezza schiena e bicipiti",
+"tempo": null
+},
+{
+"nome_esercizio": "Dips",
+"descrizione_esercizio": "Affondi alle parallele o su panca",
+"serie": 3,
+"ripetizioni": "8-12",
+"note_esercizio": "Mantieni il busto leggermente inclinato in avanti",
+"descrizione_focus": "Definizione braccia (tricipiti) e pettorali",
+"tempo": "2s discesa, 1s salita"
+},
+{
+"nome_esercizio": "Push-ups",
+"descrizione_esercizio": "Piegamenti a terra",
+"serie": 3,
+"ripetizioni": "12-15",
+"note_esercizio": "Corpo dritto come una tavola, gomiti non troppo larghi",
+"descrizione_focus": "Forza di spinta e stabilità del core",
+"tempo": null
+},
+{
+"nome_esercizio": "Walking Lunges",
+"descrizione_esercizio": "Affondi camminati",
+"serie": 3,
+"ripetizioni": "12 per gamba",
+"note_esercizio": "Passo ampio per attivare bene i glutei",
+"descrizione_focus": "Gambe toniche e glutei senza massa eccessiva",
+"tempo": null
+},
+{
+"nome_esercizio": "Hollow Body Hold",
+"descrizione_esercizio": "Tenuta a barchetta",
+"serie": 4,
+"ripetizioni": null,
+"note_esercizio": "Schiaccia la zona lombare contro il pavimento",
+"descrizione_focus": "Addome profondo e definizione 'six-pack'",
+"tempo": "30-45 secondi"
+},
+{
+"nome_esercizio": "Dead Bug",
+"descrizione_esercizio": "Insetto morto",
+"serie": 3,
+"ripetizioni": "10 per lato",
+"note_esercizio": "Movimento controllato e lento coordinando braccia e gambe",
+"descrizione_focus": "Coordinazione core e protezione della schiena",
+"tempo": "Esecuzione lenta"
+},
+{
+"nome_esercizio": "Leg Raises",
+"descrizione_esercizio": "Sollevamento gambe appeso alla sbarra",
+"serie": 3,
+"ripetizioni": "10-12",
+"note_esercizio": "Evita di dondolare con il corpo",
+"descrizione_focus": "Addominali bassi e forza della presa",
+"tempo": null
+}
+]

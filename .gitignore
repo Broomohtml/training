@@ -1,0 +1,10 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs interni — non pushare
+*.md
+!README.md
+
+# Editor
+.vscode/

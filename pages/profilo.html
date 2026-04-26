@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0B0B15" />
+  <title>Profilo · Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/style.css" />
+  <script>
+    document.documentElement.style.setProperty('--screen-height', window.screen.height + 'px');
+    function setAppHeight() {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', h + 'px');
+    }
+    setAppHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => { setAppHeight(); setTimeout(setAppHeight, 300); });
+    } else {
+      window.addEventListener('resize', setAppHeight);
+    }
+  </script>
+</head>
+<body data-page="profilo">
+
+  <!-- Header -->
+  <div class="page-top-bar">
+    <span class="page-title">Profilo</span>
+  </div>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-list-sheet" style="border-radius:0; border:none; background:transparent; backdrop-filter:none;">
+      <div class="page-list-scroll" style="-webkit-mask-image:none; mask-image:none;">
+
+        <!-- Avatar -->
+        <div class="profile-hero">
+          <div class="profile-avatar-large" id="profileAvatarLarge">?</div>
+          <div class="profile-name-display" id="profileNameDisplay">Il tuo profilo</div>
+          <div class="profile-sub">Training App v<span id="versionEl">—</span></div>
+        </div>
+
+        <!-- Form -->
+        <div class="profile-form">
+          <div class="form-row">
+            <label class="form-label">Nome</label>
+            <input type="text" id="profileNomeInput" class="form-input" placeholder="Il tuo nome" autocomplete="given-name" />
+          </div>
+          <div style="height:12px"></div>
+          <button class="submit-btn" id="saveProfiloBtn">Salva profilo</button>
+        </div>
+
+        <!-- App Info -->
+        <div class="app-info-section">
+          <div class="app-info-row">
+            <span>Versione app</span>
+            <span id="versionDisplay">—</span>
+          </div>
+          <div class="app-info-row">
+            <span>Dati salvati in</span>
+            <span>localStorage</span>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <button class="danger-btn" id="resetDataBtn">
+          <span class="material-symbols-outlined">delete_forever</span>
+          Cancella tutti i dati
+        </button>
+
+        <div style="height: 40px"></div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-page="home">
+      <span class="material-symbols-outlined nav-icon">home</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="schede">
+      <span class="material-symbols-outlined nav-icon">calendar_view_week</span>
+      <span class="nav-label">Schede</span>
+    </button>
+    <button class="nav-item" data-page="progressi">
+      <span class="material-symbols-outlined nav-icon">trending_up</span>
+      <span class="nav-label">Progressi</span>
+    </button>
+    <button class="nav-item" data-page="profilo">
+      <span class="material-symbols-outlined nav-icon">person</span>
+      <span class="nav-label">Profilo</span>
+    </button>
+  </nav>
+
+  <script src="../assets/app.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');</script>
+</body>
+</html>

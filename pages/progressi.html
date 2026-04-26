@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0B0B15" />
+  <title>Progressi · Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/style.css" />
+  <script>
+    document.documentElement.style.setProperty('--screen-height', window.screen.height + 'px');
+    function setAppHeight() {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', h + 'px');
+    }
+    setAppHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => { setAppHeight(); setTimeout(setAppHeight, 300); });
+    } else {
+      window.addEventListener('resize', setAppHeight);
+    }
+  </script>
+</head>
+<body data-page="progressi">
+
+  <!-- Header -->
+  <div class="page-top-bar">
+    <span class="page-title">Progressi</span>
+  </div>
+
+  <!-- Main -->
+  <main class="main-content">
+    <div class="page-list-sheet" style="border-radius:0; border:none; background:transparent; backdrop-filter:none;">
+      <div class="page-list-scroll" style="-webkit-mask-image:none; mask-image:none;">
+
+        <!-- Streak Cards -->
+        <div style="padding: 12px 0 4px 16px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-3)">Streak</div>
+        <div class="streak-grid">
+
+          <div class="streak-card highlight">
+            <div class="streak-icon">🔥</div>
+            <div class="streak-value" id="streakAll">0</div>
+            <div class="streak-card-label">Cumulativa</div>
+            <div class="streak-sub">giorni di fila</div>
+          </div>
+
+          <div class="streak-card">
+            <div class="streak-icon">🏋️</div>
+            <div class="streak-value" id="streakGym">0</div>
+            <div class="streak-card-label">Palestra</div>
+            <div class="streak-sub">giorni di fila</div>
+          </div>
+
+          <div class="streak-card">
+            <div class="streak-icon">🏠</div>
+            <div class="streak-value" id="streakHome">0</div>
+            <div class="streak-card-label">Casa</div>
+            <div class="streak-sub">giorni di fila</div>
+          </div>
+
+          <div class="streak-card">
+            <div class="streak-icon">🏃</div>
+            <div class="streak-value" id="streakCorsa">0</div>
+            <div class="streak-card-label">Corsa</div>
+            <div class="streak-sub">sessioni totali</div>
+          </div>
+
+        </div>
+
+        <!-- Corsa Button -->
+        <button class="corsa-btn" id="corsaBtn">
+          <span class="material-symbols-outlined">directions_run</span>
+          Sono andato a correre oggi
+        </button>
+
+        <!-- Sessioni Recenti -->
+        <div class="sessioni-label">Sessioni recenti</div>
+        <div id="sessioniList"></div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-page="home">
+      <span class="material-symbols-outlined nav-icon">home</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="schede">
+      <span class="material-symbols-outlined nav-icon">calendar_view_week</span>
+      <span class="nav-label">Schede</span>
+    </button>
+    <button class="nav-item" data-page="progressi">
+      <span class="material-symbols-outlined nav-icon">trending_up</span>
+      <span class="nav-label">Progressi</span>
+    </button>
+    <button class="nav-item" data-page="profilo">
+      <span class="material-symbols-outlined nav-icon">person</span>
+      <span class="nav-label">Profilo</span>
+    </button>
+  </nav>
+
+  <script src="../assets/app.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');</script>
+</body>
+</html>

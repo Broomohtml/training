@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Training" />
+  <meta name="theme-color" content="#0B0B15" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    document.documentElement.style.setProperty('--screen-height', window.screen.height + 'px');
+    function setAppHeight() {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', h + 'px');
+    }
+    setAppHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => { setAppHeight(); setTimeout(setAppHeight, 300); });
+    } else {
+      window.addEventListener('resize', setAppHeight);
+    }
+  </script>
+</head>
+<body data-page="home">
+
+  <div class="home-bg" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <button class="header-avatar" id="headerAvatar">T</button>
+    <span class="header-title">Training</span>
+    <button class="header-icon-btn" id="headerCalBtn" aria-label="Calendario e dieta">
+      <span class="material-symbols-outlined">bolt</span>
+    </button>
+  </header>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <!-- Hero -->
+    <section class="home-hero">
+      <div class="hero-day" id="heroDay">OGGI</div>
+      <div class="hero-date" id="heroDate">—</div>
+      <div class="hero-streak" id="heroStreak" style="display:none">
+        <span class="material-symbols-outlined">local_fire_department</span>
+        <span class="streak-num"></span>
+      </div>
+    </section>
+
+    <!-- Toggle Gym / Home -->
+    <div class="scheda-type-toggle">
+      <button class="scheda-type-btn active" data-tipo="gym">
+        <span class="material-symbols-outlined">fitness_center</span>
+        Palestra
+      </button>
+      <button class="scheda-type-btn" data-tipo="home">
+        <span class="material-symbols-outlined">home</span>
+        Casa
+      </button>
+    </div>
+
+    <!-- Exercise Sheet -->
+    <div class="page-list-sheet">
+      <div class="list-sheet-header">
+        <span class="list-sheet-title">Oggi</span>
+        <button class="complete-workout-btn" id="completeWorkoutBtn">
+          <span class="material-symbols-outlined">check_circle</span>
+          <span class="btn-label">Salva (0/0)</span>
+        </button>
+      </div>
+      <div class="page-list-scroll">
+        <div id="exerciseList"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Timer Widget -->
+  <div class="timer-widget" id="timerWidget">
+    <div class="timer-icon">
+      <span class="material-symbols-outlined">timer</span>
+    </div>
+    <div class="timer-info">
+      <div class="timer-name" id="timerName">—</div>
+      <div class="timer-countdown" id="timerCountdown">00:00</div>
+      <div class="timer-bar-wrap">
+        <div class="timer-bar-fill" id="timerBarFill" style="width:100%"></div>
+      </div>
+    </div>
+    <div class="timer-controls">
+      <button class="timer-ctrl-btn" id="timerPlayPause" aria-label="Pausa/Riprendi">
+        <span class="material-symbols-outlined">pause</span>
+      </button>
+      <button class="timer-ctrl-btn" id="timerStop" aria-label="Stop">
+        <span class="material-symbols-outlined">stop</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-page="home">
+      <span class="material-symbols-outlined nav-icon">home</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="schede">
+      <span class="material-symbols-outlined nav-icon">calendar_view_week</span>
+      <span class="nav-label">Schede</span>
+    </button>
+    <button class="nav-item" data-page="progressi">
+      <span class="material-symbols-outlined nav-icon">trending_up</span>
+      <span class="nav-label">Progressi</span>
+    </button>
+    <button class="nav-item" data-page="profilo">
+      <span class="material-symbols-outlined nav-icon">person</span>
+      <span class="nav-label">Profilo</span>
+    </button>
+  </nav>
+
+  <script src="assets/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
